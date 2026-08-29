@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Range">
+<meta name="theme-color" content="#EEF1EF">
+<title>Range</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16232B; --ink-2:#3A4B52; --muted:#6B7C78;
+  --paper:#EEF1EF; --card:#FFFFFF; --line:#D9DFDB; --line-2:#EAEEEB;
+  --teal:#2F6F62; --teal-soft:#E1EDE9; --teal-ink:#1E4A41;
+  --ochre:#9A7C22; --ochre-soft:#F4EEDA;
+  --rust:#9C4A2F; --rust-soft:#F7E7E1;
+  --slate:#4A6275; --slate-soft:#E6ECF0;
+  --display:'Bricolage Grotesque',system-ui,sans-serif;
+  --body:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  --r:14px; --r-sm:9px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink); font-family:var(--body);
+  font-size:16px; line-height:1.45; -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:none;padding:0;cursor:pointer}
+h1,h2,h3,h4{margin:0;font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---------- layout ---------- */
+#app{max-width:640px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
+.screen{flex:1;padding:calc(var(--safe-t) + 14px) 16px 130px}
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}
+.topbar h1{font-size:30px}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+
+/* ---------- cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:11px}
+.card.flush{padding:0;overflow:hidden}
+.card-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:9px}
+.card h3{font-size:17px}
+.sub{color:var(--muted);font-size:13.5px}
+
+/* ---------- banner ---------- */
+.banner{border-radius:var(--r);padding:14px 15px;margin-bottom:11px;border:1px solid}
+.banner.clinician{background:var(--slate-soft);border-color:#C6D3DC}
+.banner.clinician .eyebrow{color:var(--slate)}
+.banner h3{font-size:15.5px;color:#2C4356;margin-bottom:3px}
+.banner p{font-size:13.5px;color:#41586B}
+
+/* ---------- signature: range bar ---------- */
+.rangebar{margin:12px 0 4px}
+.rangebar-track{position:relative;height:26px;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#F7F9F8;display:flex}
+.rb-safe{background:var(--teal-soft);border-right:2px solid var(--teal);position:relative}
+.rb-end{
+  flex:1;
+  background-image:repeating-linear-gradient(135deg,transparent 0 5px,rgba(154,124,34,.28) 5px 6.5px);
+  background-color:var(--ochre-soft);
+}
+.rb-stop{position:absolute;top:0;bottom:0;width:2px;background:var(--teal)}
+.rangebar-labels{display:flex;justify-content:space-between;margin-top:5px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rangebar-labels .end{color:var(--ochre)}
+.rb-lock{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--ochre);font-family:var(--mono)}
+
+/* ---------- tags ---------- */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;padding:3px 7px;border-radius:5px;background:var(--paper);color:var(--ink-2);border:1px solid var(--line-2)}
+.tag.teal{background:var(--teal-soft);color:var(--teal-ink);border-color:#C4DDD6}
+.tag.ochre{background:var(--ochre-soft);color:#6E5814;border-color:#E4D8AE}
+.tag.rust{background:var(--rust-soft);color:var(--rust);border-color:#EBCEC4}
+.tag.slate{background:var(--slate-soft);color:#33495B;border-color:#CBD8E0}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:46px;padding:0 18px;border-radius:10px;font-weight:600;font-size:15px;border:1px solid transparent;transition:opacity .12s}
+.btn:active{opacity:.72}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-quiet{background:var(--card);color:var(--ink);border-color:var(--line)}
+.btn-ghost{color:var(--teal);font-weight:600}
+.btn-wide{width:100%}
+.btn-row{display:flex;gap:9px;margin-top:12px}
+.btn-sm{min-height:38px;font-size:14px;padding:0 13px}
+
+/* ---------- filters ---------- */
+.filterbar{display:flex;gap:7px;overflow-x:auto;padding:2px 16px 12px;margin:0 -16px;scrollbar-width:none}
+.filterbar::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-height:36px;padding:0 13px;border-radius:18px;border:1px solid var(--line);background:var(--card);font-size:13.5px;font-weight:500;display:inline-flex;align-items:center}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* ---------- exercise row ---------- */
+.exrow{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:14px 15px;border-bottom:1px solid var(--line-2)}
+.exrow:last-child{border-bottom:none}
+.exrow-body{flex:1;min-width:0}
+.exrow h4{font-family:var(--display);font-size:15.5px;font-weight:600;margin-bottom:2px}
+.exrow .sub{font-size:12.5px}
+.exrow.locked{opacity:.55}
+.regionmark{flex:0 0 auto;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.02em;background:var(--paper);color:var(--ink-2);border:1px solid var(--line-2)}
+
+/* ---------- frames (still images) ---------- */
+.frames{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:4px 0 12px}
+.frame{border:1px solid var(--line);border-radius:var(--r-sm);background:#FAFBFA;padding:9px;text-align:center}
+.frame svg{width:100%;height:104px;display:block}
+.frame span{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:block;margin-top:5px}
+
+/* ---------- cue blocks ---------- */
+.cue{border-radius:var(--r-sm);padding:11px 12px;margin-bottom:8px;font-size:14px;line-height:1.42}
+.cue-do{background:var(--teal-soft);color:var(--teal-ink)}
+.cue-avoid{background:var(--rust-soft);color:#7C3A24}
+.cue b{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;display:block;margin-bottom:3px;opacity:.8;font-weight:600}
+
+/* ---------- modification rows ---------- */
+.mod{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line-2)}
+.mod-toggle{flex:0 0 auto;width:46px;height:28px;border-radius:14px;background:var(--line);position:relative;transition:background .15s}
+.mod-toggle span{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.mod-toggle[aria-pressed="true"]{background:var(--teal)}
+.mod-toggle[aria-pressed="true"] span{transform:translateX(18px)}
+.mod-toggle.boundary[aria-pressed="true"]{background:var(--ochre)}
+.mod-body{flex:1}
+.mod-body strong{font-size:14.5px;font-weight:600;display:block}
+.mod-body .sub{font-size:12.5px;margin-top:1px}
+.perm{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:1px}
+.perm.boundary{background:var(--ochre-soft);color:#6E5814}
+.perm.support{background:var(--slate-soft);color:#33495B}
+.perm.challenge{background:var(--teal-soft);color:var(--teal-ink)}
+.perm.accommodation{background:var(--rust-soft);color:var(--rust)}
+
+/* ---------- sheet ---------- */
+.sheet-bg{position:fixed;inset:0;background:rgba(22,35,43,.42);z-index:60;opacity:0;pointer-events:none;transition:opacity .18s}
+.sheet-bg.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:61;background:var(--paper);border-radius:20px 20px 0 0;max-height:93dvh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .24s cubic-bezier(.32,.72,0,1)}
+.sheet.open{transform:translateY(0)}
+.sheet-head{padding:8px 16px 12px;border-bottom:1px solid var(--line);background:var(--paper);border-radius:20px 20px 0 0}
+.grabber{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px}
+.sheet-head h2{font-size:21px;padding-right:40px}
+.sheet-body{overflow-y:auto;padding:15px 16px calc(28px + var(--safe-b));-webkit-overflow-scrolling:touch}
+.sheet-close{position:absolute;right:14px;top:22px;width:32px;height:32px;border-radius:16px;background:var(--line-2);display:grid;place-items:center;font-size:17px;color:var(--ink-2)}
+.sheet-max{max-width:640px;margin:0 auto}
+
+/* ---------- rating pickers ---------- */
+.rating{margin-bottom:16px}
+.rating-lab{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.rating-lab strong{font-size:14.5px;font-weight:600}
+.rating-lab .hint{font-size:12px;color:var(--muted)}
+.opt{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);background:var(--card);border-radius:var(--r-sm);margin-bottom:6px}
+.opt[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.opt[aria-pressed="true"] .opt-def{color:rgba(255,255,255,.82)}
+.opt-n{flex:0 0 auto;width:26px;height:26px;border-radius:7px;background:var(--paper);display:grid;place-items:center;font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink)}
+.opt[aria-pressed="true"] .opt-n{background:rgba(255,255,255,.2);color:#fff}
+.opt-def{font-size:13px;line-height:1.38;color:var(--ink-2)}
+
+.note{background:var(--ochre-soft);border-radius:var(--r-sm);padding:11px 12px;font-size:13px;line-height:1.42;color:#6E5814;margin-bottom:12px}
+.note b{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+
+/* ---------- numeric inputs ---------- */
+.numgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.numfield label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.numfield input{width:100%;height:50px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);padding:0 13px;font-family:var(--mono);font-size:19px;font-weight:500;text-align:center}
+.numfield input:focus{outline:2px solid var(--teal);outline-offset:-1px}
+
+/* ---------- session runner ---------- */
+.setline{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:14px}
+.setline:last-child{border-bottom:none}
+.setline .idx{font-family:var(--mono);font-size:11px;color:var(--muted);width:34px;flex:0 0 auto}
+.setline .val{font-family:var(--mono);font-weight:500}
+.setline .dot{width:8px;height:8px;border-radius:4px;flex:0 0 auto}
+
+.timer{text-align:center;padding:22px 0 6px}
+.timer-n{font-family:var(--mono);font-size:64px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.timer-lab{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:7px}
+.timer.rest .timer-n{color:var(--slate)}
+
+/* ---------- history grid ---------- */
+.daygrid{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin:12px 0 6px}
+.daycell{aspect-ratio:1;border-radius:3px;background:var(--line-2);border:1px solid transparent}
+.daycell.done{background:var(--teal)}
+.daycell.partial{background:var(--teal-soft);border-color:var(--teal)}
+.daycell.today{border-color:var(--ink)}
+
+.trend{display:flex;align-items:baseline;gap:8px;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.trend:last-child{border-bottom:none}
+.trend-name{flex:1;font-size:14.5px}
+.trend-val{font-family:var(--mono);font-size:14px;font-weight:500}
+.trend-tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:var(--paper);color:var(--muted);border:1px solid var(--line-2)}
+
+/* ---------- tabbar ---------- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(238,241,239,.93);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding-bottom:var(--safe-b)}
+.tabbar-in{max-width:640px;margin:0 auto;display:flex;width:100%}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 0 8px;color:var(--muted)}
+.tab[aria-current="page"]{color:var(--teal)}
+.tab svg{width:21px;height:21px}
+.tab span{font-size:10.5px;font-weight:600;letter-spacing:.01em}
+
+.empty{text-align:center;padding:38px 22px;color:var(--muted)}
+.empty h3{font-size:17px;color:var(--ink);margin-bottom:6px}
+.empty p{font-size:14px;line-height:1.5}
+
+.disclaim{font-size:12px;line-height:1.5;color:var(--muted);padding:14px 2px 0;border-top:1px solid var(--line);margin-top:18px}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.field select,.field input[type=text]{width:100%;height:46px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--card);padding:0 12px}
+.switchrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line-2)}
+.switchrow:last-child{border-bottom:none}
+.switchrow .sub{font-size:12.5px;margin-top:2px}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-b));transform:translate(-50%,14px);background:var(--ink);color:#fff;padding:11px 17px;border-radius:10px;font-size:14px;z-index:80;opacity:0;pointer-events:none;transition:all .2s;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="screen" class="screen"></div>
+  <nav class="tabbar"><div class="tabbar-in" id="tabbar"></div></nav>
+</div>
+<div class="sheet-bg" id="sheetbg"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-head">
+    <div class="grabber"></div>
+    <h2 id="sheet-title"></h2>
+    <button class="sheet-close" id="sheet-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="sheet-body"><div class="sheet-max" id="sheet-body"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+/* ============================================================
+   RANGE — v1
+   Single-file. No build step. Add to Home Screen on iOS.
+   ============================================================ */
+
+/* ---------- storage adapter: artifact host -> localStorage -> memory ---------- */
+const Store = (() => {
+  const mem = {};
+  const host = (typeof window !== 'undefined' && window.storage) ? window.storage : null;
+  let ls = null;
+  try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); ls = localStorage; } catch(e){}
+  return {
+    async get(k){
+      if (host){ try { const r = await host.get(k); return r ? r.value : null; } catch(e){ return null; } }
+      if (ls){ try { return ls.getItem(k); } catch(e){} }
+      return mem[k] ?? null;
+    },
+    async set(k,v){
+      if (host){ try { await host.set(k,v); return true; } catch(e){} }
+      if (ls){ try { ls.setItem(k,v); return true; } catch(e){} }
+      mem[k]=v; return true;
+    },
+    where(){ return host ? 'host' : (ls ? 'device' : 'memory only'); }
+  };
+})();
+
+/* ---------- schematic figures (replace with your own photos) ---------- */
+const G = {
+  ground: '<line x1="6" y1="112" x2="154" y2="112" stroke="#C9D2CE" stroke-width="2"/>',
+  head: (x,y,r=9) => `<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#16232B" stroke-width="2.4"/>`,
+  ln: (x1,y1,x2,y2,w=2.4,c='#16232B') => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`,
+  box: (x,y,w,h,c='#C9D2CE') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${c}" stroke-width="2.2" rx="2"/>`,
+  dot: (x,y,r=4,c='#9A7C22') => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"/>`,
+  arc: (d,c='#2F6F62') => `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-dasharray="4 3"/>`
+};
+function fig(name){
+  const s = (inner) => `<svg viewBox="0 0 160 124" xmlns="http://www.w3.org/2000/svg">${G.ground}${inner}</svg>`;
+  const F = {
+    stand: s(G.head(80,26)+G.ln(80,35,80,72)+G.ln(80,45,64,60)+G.ln(80,45,96,60)+G.ln(80,72,70,112)+G.ln(80,72,90,112)),
+    heelsup: s(G.head(80,22)+G.ln(80,31,80,68)+G.ln(80,41,64,56)+G.ln(80,41,96,56)+G.ln(80,68,70,104)+G.ln(80,68,90,104)+G.ln(70,104,74,112,2.4,'#2F6F62')+G.ln(90,104,86,112,2.4,'#2F6F62')),
+    seated: s(G.box(96,72,34,40)+G.head(72,40)+G.ln(72,49,72,80)+G.ln(72,80,100,80)+G.ln(100,80,100,112)+G.ln(72,58,58,72)),
+    seatedcalf: s(G.box(96,72,34,40)+G.head(72,40)+G.ln(72,49,72,80)+G.ln(72,80,100,80)+G.ln(100,80,100,100)+G.ln(100,100,112,100,2.4,'#2F6F62')+G.dot(100,92)),
+    wallsit: s(G.ln(34,12,34,112,3,'#C9D2CE')+G.head(52,44)+G.ln(42,53,42,80)+G.ln(42,80,78,80)+G.ln(78,80,78,112)+G.ln(42,60,66,66)),
+    chairsquat: s(G.box(100,74,36,38)+G.head(70,34)+G.ln(70,43,68,74)+G.ln(68,74,96,78)+G.ln(96,78,96,112)+G.ln(70,50,86,58)+G.arc('M96 78 q8 -4 8 -8')),
+    squatdown: s(G.box(100,74,36,38)+G.head(74,44)+G.ln(74,53,70,78)+G.ln(70,78,94,80)+G.ln(94,80,94,112)+G.ln(74,60,88,64)),
+    supine: s(G.head(34,96)+G.ln(43,96,92,96)+G.ln(92,96,116,96)+G.ln(60,96,60,84)),
+    bridge: s(G.head(30,100)+G.ln(39,100,74,80)+G.ln(74,80,96,102)+G.ln(96,102,96,112)+G.ln(50,96,50,108)),
+    supineflat: s(G.head(30,102)+G.ln(39,102,100,102)+G.ln(100,102,126,102)),
+    sidelie: s(G.head(30,88)+G.ln(39,88,92,88)+G.ln(92,88,120,96)+G.ln(92,88,116,72,2.4,'#2F6F62')),
+    onelegs: s(G.head(80,26)+G.ln(80,35,80,72)+G.ln(80,45,64,58)+G.ln(80,45,96,58)+G.ln(80,72,80,112)+G.ln(80,80,98,92,2.4,'#2F6F62')),
+    wall: s(G.ln(30,12,30,112,3,'#C9D2CE')+G.head(62,34)+G.ln(62,43,62,76)+G.ln(62,50,40,44)+G.ln(62,76,54,112)+G.ln(62,76,72,112)),
+    wallslide: s(G.ln(30,12,30,112,3,'#C9D2CE')+G.head(62,42)+G.ln(62,51,62,80)+G.ln(62,56,40,34)+G.ln(62,80,54,112)+G.ln(62,80,72,112)+G.arc('M40 44 q-4 -10 0 -14')),
+    band: s(G.head(80,28)+G.ln(80,37,80,74)+G.ln(80,48,60,58)+G.ln(80,48,100,58)+G.ln(60,58,50,58,2.4,'#9A7C22')+G.ln(100,58,110,58,2.4,'#9A7C22')+G.ln(80,74,72,112)+G.ln(80,74,88,112)),
+    bandout: s(G.head(80,28)+G.ln(80,37,80,74)+G.ln(80,48,54,52)+G.ln(80,48,106,52)+G.ln(54,52,42,50,2.4,'#9A7C22')+G.ln(106,52,118,50,2.4,'#9A7C22')+G.ln(80,74,72,112)+G.ln(80,74,88,112)),
+    wristflat: s(G.box(30,86,100,10)+G.ln(48,86,86,66)+G.ln(86,66,110,60)+G.dot(86,66,4,'#2F6F62')),
+    wristpress: s(G.box(30,86,100,10)+G.ln(48,86,86,70)+G.ln(86,70,112,70)+G.ln(96,70,96,58,2.4,'#9A7C22')),
+    fingers: s(G.ln(56,96,56,64)+G.ln(66,96,66,60)+G.ln(76,96,76,62)+G.ln(86,96,86,68)+G.ln(46,96,96,96)+G.arc('M52 60 q24 -10 48 4')),
+    neck: s(G.head(70,84,12)+G.ln(82,84,120,84)+G.ln(56,74,56,94,2.4,'#9A7C22')+G.arc('M70 70 q6 -8 14 -6')),
+    quad: s(G.head(34,72)+G.ln(43,72,96,72)+G.ln(96,72,96,110)+G.ln(52,72,52,110)+G.ln(43,72,30,84,2.4,'#9C4A2F')),
+    stepdown: s(G.box(92,88,44,24)+G.head(78,30)+G.ln(78,39,78,72)+G.ln(78,72,78,88)+G.ln(78,72,64,104,2.4,'#2F6F62')+G.ln(78,50,92,58)),
+    toes: s(G.ln(40,96,120,96)+G.ln(120,96,120,84)+G.dot(112,88,3)+G.dot(102,86,3)+G.dot(92,86,3)+G.arc('M88 78 q16 -6 32 0'))
+  };
+  return F[name] || F.stand;
+}
+
+/* ---------- modifications ---------- */
+const MODS = [
+  {id:'chair_stop', name:'Chair or box stop', perm:'boundary', why:'Sets a hard depth limit so the hip and knee stay inside normal range. This is not a training wheel — it stays.', equip:'chair or box', delta:{rom:'mid_range'}, locks:['depth']},
+  {id:'lacrosse_ankles', name:'Lacrosse ball between ankles', perm:'boundary', why:'Holds foot and ankle alignment and adds an isometric squeeze so the ankles cannot splay outward.', equip:'lacrosse ball', delta:{proprio:1}, locks:['alignment']},
+  {id:'roller_knees', name:'Foam roller between knees', perm:'boundary', why:'Stops the knees travelling inward under load.', equip:'foam roller or block', delta:{}, locks:['knee_track']},
+  {id:'depth_90', name:'Stop at 90 degrees', perm:'boundary', why:'Caps knee and hip flexion at a right angle. Going deeper adds range, not strength.', equip:'none', delta:{rom:'mid_range'}, locks:['depth']},
+  {id:'wall_touch', name:'Wall or counter touch', perm:'support', why:'Two fingers on a surface for balance. Comes off when single-leg control is steady.', equip:'wall or counter', delta:{balance:-2}},
+  {id:'elevated_hands', name:'Hands elevated', perm:'support', why:'Reduces how far the wrist has to extend and lightens the load.', equip:'counter or step', delta:{wrist:'low'}},
+  {id:'eyes_closed', name:'Eyes closed', perm:'challenge', why:'Removes vision so position sense has to do the work. Add only once the eyes-open version is steady.', equip:'none', delta:{proprio:2}},
+  {id:'slow_ecc', name:'Slow lowering (4 count)', perm:'challenge', why:'Four seconds down. Adds effective load without adding weight, which is usually the better trade.', equip:'none', delta:{}},
+  {id:'unstable', name:'Cushion or folded towel underfoot', perm:'challenge', why:'A slightly unstable surface raises the position-sense demand.', equip:'cushion or towel', delta:{proprio:1}},
+  {id:'towel_neck', name:'Towel roll under neck', perm:'accommodation', why:'Supports the cervical curve so the neck is not holding itself up. Comes off when your clinician says so, not when a gate says so.', equip:'hand towel', delta:{cervical:'low'}},
+  {id:'no_trunk_load', name:'Keep the trunk unloaded', perm:'accommodation', why:'Set by your clinician while a spinal structure is healing. Only they clear it.', equip:'none', delta:{trunk:'none'}}
+];
+const MODMAP = Object.fromEntries(MODS.map(m=>[m.id,m]));
+
+/* ---------- exercise library ----------
+   Every exercise carries the safety metadata from the plan.
+   trunk: none | low | med | high  -> filtered by the active restriction
+   source/tier: 1-2 auto-usable, 3-4 "worth trying", never auto-scheduled
+------------------------------------------------------------------ */
+const EX = [
+/* ===== FOOT & ANKLE ===== */
+{id:'calf_seated', name:'Seated calf raise', region:'foot_ankle', phase:1, chain:'closed', contraction:'concentric', rom:'mid_range', position:'seated',
+ joints:['ankle','foot','toe'], proprio:1, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['lacrosse_ankles','slow_ecc'], figStart:'seated', figEnd:'seatedcalf', tempo:'2-1-3', dose:'3 x 12',
+ cueDo:'Sit tall, feet flat and hip width. Press through the base of the big toe and the ball of the foot together. Rise only to a comfortable height.',
+ cueAvoid:'Do not let the ankles roll outward or the weight drift to the little-toe side. Do not push for maximum height.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'calf_stand', name:'Standing calf raise', region:'foot_ankle', phase:1, chain:'closed', contraction:'mixed', rom:'mid_range', position:'standing',
+ joints:['ankle','foot','toe'], proprio:2, balance:1, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['lacrosse_ankles','wall_touch','slow_ecc'], figStart:'stand', figEnd:'heelsup', tempo:'2-1-4', dose:'3 x 12',
+ cueDo:'Fingertips on a counter for balance. Rise evenly through both feet, pause, then take four seconds to lower.',
+ cueAvoid:'Do not let the ankles splay outward. Do not bounce at the bottom.',
+ tier:1, sport:{volleyball:5}},
+
+{id:'short_foot', name:'Short foot (arch doming)', region:'foot_ankle', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['foot','toe'], proprio:3, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'toes', figEnd:'toes', tempo:'hold 8s', dose:'3 x 8 holds',
+ cueDo:'Foot flat. Draw the ball of the foot toward the heel to lift the arch, keeping the toes long and relaxed on the floor.',
+ cueAvoid:'Do not curl or grip with the toes. Do not roll the foot to the outside edge.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'toe_spread', name:'Toe spreading and lifting', region:'foot_ankle', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['toe','foot'], proprio:3, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'toes', figEnd:'toes', tempo:'slow', dose:'2 x 10',
+ cueDo:'Lift all five toes, then set them down one at a time from the little toe inward. Then spread the toes wide without lifting.',
+ cueAvoid:'Do not force a toe with your hand. Slow and small is the point.',
+ tier:1, sport:{}},
+
+{id:'sls', name:'Single-leg stance', region:'foot_ankle', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'standing',
+ joints:['ankle','foot','knee','hip'], proprio:3, balance:3, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:['wall_touch','eyes_closed','unstable'], figStart:'stand', figEnd:'onelegs', tempo:'hold', dose:'3 x 30s each side',
+ cueDo:'Stand on one leg with a soft knee, never locked. Keep the arch lifted and the hips level. Start with fingertips on a counter.',
+ cueAvoid:'Do not lock the standing knee. Do not let the hip drop on the lifted side.',
+ tier:1, sport:{volleyball:5}},
+
+{id:'ankle_evert', name:'Banded ankle eversion', region:'foot_ankle', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['ankle','foot'], proprio:2, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['band'], spaces:['home','gym'], mods:['slow_ecc'], figStart:'seated', figEnd:'band', tempo:'3-2-3', dose:'2 x 12 each',
+ cueDo:'Band around the foot. Turn the sole outward against the band through a small range, then return under control.',
+ cueAvoid:'Do not go to the end of the range. Small and controlled beats big and loose.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'ankle_invert', name:'Banded ankle inversion', region:'foot_ankle', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['ankle','foot'], proprio:2, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['band'], spaces:['home','gym'], mods:['slow_ecc'], figStart:'seated', figEnd:'band', tempo:'3-2-3', dose:'2 x 12 each',
+ cueDo:'Band anchored to the outside. Turn the sole inward through a small range and return slowly.',
+ cueAvoid:'Do not let the ankle roll past neutral in either direction.',
+ tier:1, sport:{volleyball:3}},
+
+{id:'heel_toe', name:'Heel and toe rocking', region:'foot_ankle', phase:1, chain:'closed', contraction:'mixed', rom:'mid_range', position:'standing',
+ joints:['ankle','foot'], proprio:2, balance:2, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:['wall_touch'], figStart:'stand', figEnd:'heelsup', tempo:'slow', dose:'2 x 10',
+ cueDo:'Rock slowly onto the heels, then onto the balls of the feet. Stay inside a range you can stop in at any point.',
+ cueAvoid:'Do not rock to the end of the range. If you cannot stop halfway, the range is too big.',
+ tier:1, sport:{volleyball:3}},
+
+/* ===== KNEE & HIP ===== */
+{id:'wall_sit', name:'Wall sit', region:'knee_hip', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'standing',
+ joints:['knee','hip','ankle'], proprio:1, balance:1, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'med',
+ equip:['none'], spaces:['home','gym'], mods:['depth_90','roller_knees'], figStart:'wall', figEnd:'wallsit', tempo:'hold', dose:'3 x 30s',
+ cueDo:'Back flat on the wall, feet forward, knees stopping at a right angle. Weight even through both feet.',
+ cueAvoid:'Do not sink below 90 degrees. Do not let the knees fall inward.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'chair_squat', name:'Squat to a chair', region:'knee_hip', phase:1, chain:'closed', contraction:'mixed', rom:'mid_range', position:'standing',
+ joints:['knee','hip','ankle'], proprio:2, balance:1, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'med',
+ equip:['none'], spaces:['home','gym'], mods:['chair_stop','roller_knees','slow_ecc'], figStart:'stand', figEnd:'chairsquat', tempo:'3-1-2', dose:'3 x 10',
+ cueDo:'Lower until you touch the chair, then stand. The chair is the depth limit, not a rest.',
+ cueAvoid:'Do not drop past the chair. Do not lock the knees at the top.',
+ tier:1, sport:{volleyball:5}},
+
+{id:'iso_squat', name:'Isometric squat hold', region:'knee_hip', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'standing',
+ joints:['knee','hip'], proprio:1, balance:1, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'med',
+ equip:['none'], spaces:['home','gym'], mods:['chair_stop','roller_knees'], figStart:'stand', figEnd:'squatdown', tempo:'hold', dose:'4 x 20s',
+ cueDo:'Lower to just above the chair and hold there. Breathe normally throughout.',
+ cueAvoid:'Do not hold your breath. Do not sink lower as you fatigue.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'sit_stand', name:'Sit to stand', region:'knee_hip', phase:1, chain:'closed', contraction:'mixed', rom:'mid_range', position:'seated',
+ joints:['knee','hip'], proprio:1, balance:1, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'med',
+ equip:['none'], spaces:['home','gym'], mods:['slow_ecc'], figStart:'chairsquat', figEnd:'stand', tempo:'2-0-4', dose:'3 x 8',
+ cueDo:'Stand without using your hands, then take four seconds to sit back down under control.',
+ cueAvoid:'Do not drop into the chair. Do not lock out at the top.',
+ tier:1, sport:{}},
+
+{id:'hip_abd_side', name:'Sidelying hip abduction', region:'knee_hip', phase:1, chain:'open', contraction:'mixed', rom:'mid_range', position:'side',
+ joints:['hip'], proprio:1, balance:0, wristExt:'none', cervical:'low', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['slow_ecc'], figStart:'sidelie', figEnd:'sidelie', tempo:'2-2-3', dose:'2 x 12 each',
+ cueDo:'Lie on your side, hips stacked. Lift the top leg to about hip height, no higher, then lower slowly.',
+ cueAvoid:'Do not roll the hips backward. Do not lift as high as the leg will go.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'hip_abd_stand', name:'Standing hip abduction', region:'knee_hip', phase:1, chain:'mixed', contraction:'mixed', rom:'mid_range', position:'standing',
+ joints:['hip','knee','ankle'], proprio:2, balance:2, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none','band'], spaces:['home','gym'], mods:['wall_touch','slow_ecc'], figStart:'stand', figEnd:'bandout', tempo:'2-1-3', dose:'2 x 12 each',
+ cueDo:'Fingertips on a counter. Take the leg out to the side through a small range, keeping the standing hip level.',
+ cueAvoid:'Do not lean away from the working leg. Do not lock the standing knee.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'tke', name:'Terminal knee extension with band', region:'knee_hip', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'standing',
+ joints:['knee'], proprio:1, balance:1, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'low',
+ equip:['band'], spaces:['home','gym'], mods:['wall_touch'], figStart:'stand', figEnd:'band', tempo:'2-3-2', dose:'3 x 12 each',
+ cueDo:'Band behind the knee pulling forward. Straighten the knee against it and hold, stopping short of locked.',
+ cueAvoid:'Do not push into hyperextension. Straight means straight, not backward.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'ham_iso', name:'Hamstring isometric (heel dig)', region:'knee_hip', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'supine',
+ joints:['knee','hip'], proprio:1, balance:0, wristExt:'none', cervical:'low', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['towel_neck'], figStart:'supineflat', figEnd:'supineflat', tempo:'hold 10s', dose:'3 x 6 holds',
+ cueDo:'Lying down, knees bent. Dig the heels into the floor as if dragging them toward you, without actually shifting them.',
+ cueAvoid:'Do not lift the hips. This is a press, not a bridge.',
+ tier:1, sport:{}},
+
+{id:'glute_bridge', name:'Glute bridge', region:'knee_hip', phase:1, chain:'closed', contraction:'mixed', rom:'mid_range', position:'supine',
+ joints:['hip','knee'], proprio:1, balance:0, wristExt:'none', cervical:'low', trunk:'med', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['roller_knees','slow_ecc','towel_neck'], figStart:'supineflat', figEnd:'bridge', tempo:'2-2-3', dose:'3 x 10',
+ cueDo:'Lift the hips only until the body is in a straight line from knee to shoulder. Lower slowly.',
+ cueAvoid:'Do not arch the lower back to get higher. Height is not the goal.',
+ tier:1, sport:{volleyball:3}},
+
+{id:'step_down', name:'Step-down to a low box', region:'knee_hip', phase:2, chain:'closed', contraction:'eccentric', rom:'mid_range', position:'standing',
+ joints:['knee','hip','ankle'], proprio:3, balance:3, wristExt:'none', cervical:'none', trunk:'low', impact:'low', autonomic:'med',
+ equip:['step'], spaces:['home','gym'], mods:['wall_touch','slow_ecc'], figStart:'stand', figEnd:'stepdown', tempo:'0-0-4', dose:'3 x 6 each',
+ cueDo:'Stand on a low step. Take four seconds to lower the other heel toward the floor, tap, and return.',
+ cueAvoid:'Do not let the standing knee travel inward. Do not drop the last few inches.',
+ tier:1, sport:{volleyball:5}},
+
+/* ===== WRIST & HAND ===== */
+{id:'wrist_iso', name:'Wrist isometric holds', region:'wrist_hand', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['wrist'], proprio:2, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'wristflat', figEnd:'wristpress', tempo:'hold 6s', dose:'2 x 5 each direction',
+ cueDo:'Wrist in neutral. Press gently against your other hand in each of four directions and hold. The wrist should not travel.',
+ cueAvoid:'Do not let the wrist bend. If it is bending, you are pressing too hard.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'finger_ext', name:'Finger extension with band', region:'wrist_hand', phase:1, chain:'open', contraction:'mixed', rom:'mid_range', position:'seated',
+ joints:['finger'], proprio:2, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['band'], spaces:['home','gym','outdoor'], mods:['slow_ecc'], figStart:'fingers', figEnd:'fingers', tempo:'2-1-3', dose:'2 x 12',
+ cueDo:'Light band around the fingers. Open the hand against it, stopping before the fingers hyperextend, then close slowly.',
+ cueAvoid:'Do not let the finger joints bend backward at the end. Stop at straight.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'grip_hold', name:'Soft grip hold', region:'wrist_hand', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['finger','wrist'], proprio:1, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['ball'], spaces:['home','gym','outdoor'], mods:[], figStart:'fingers', figEnd:'fingers', tempo:'hold 10s', dose:'3 x 6 holds',
+ cueDo:'Squeeze a soft ball at about half effort and hold, keeping the wrist straight.',
+ cueAvoid:'Do not squeeze at maximum. Do not let the wrist drop.',
+ tier:1, sport:{volleyball:3}},
+
+{id:'forearm_rot', name:'Forearm rotation, controlled', region:'wrist_hand', phase:1, chain:'open', contraction:'mixed', rom:'mid_range', position:'seated',
+ joints:['wrist','elbow'], proprio:3, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'wristflat', figEnd:'wristflat', tempo:'slow', dose:'2 x 10 each',
+ cueDo:'Elbow tucked at your side. Turn the palm up and down slowly, stopping short of the end in both directions.',
+ cueAvoid:'Do not let the elbow drift away from your side. Do not go to the end of the range.',
+ tier:1, sport:{volleyball:3}},
+
+/* ===== SHOULDER & ELBOW ===== */
+{id:'scap_set', name:'Scapular setting', region:'shoulder_elbow', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['shoulder'], proprio:2, balance:0, wristExt:'none', cervical:'low', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:[], figStart:'seated', figEnd:'seated', tempo:'hold 8s', dose:'3 x 8 holds',
+ cueDo:'Sit with your back against a wall. Draw the shoulder blades gently down and back, and hold without shrugging.',
+ cueAvoid:'Do not squeeze hard. Do not lift the shoulders toward the ears.',
+ tier:1, sport:{volleyball:5}},
+
+{id:'er_iso', name:'Isometric shoulder external rotation', region:'shoulder_elbow', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'standing',
+ joints:['shoulder','elbow'], proprio:2, balance:0, wristExt:'none', cervical:'none', trunk:'low', impact:'none', autonomic:'low',
+ equip:['band'], spaces:['home','gym'], mods:[], figStart:'band', figEnd:'bandout', tempo:'2-4-2', dose:'3 x 8 each',
+ cueDo:'Elbow tucked at your side and bent to a right angle. Rotate the forearm outward a few inches against the band and hold.',
+ cueAvoid:'Do not let the elbow lift or drift back. Do not rotate as far as you can.',
+ tier:1, sport:{volleyball:5}},
+
+{id:'serratus', name:'Serratus press at the wall', region:'shoulder_elbow', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'standing',
+ joints:['shoulder','elbow','wrist'], proprio:2, balance:0, wristExt:'low', cervical:'low', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['elevated_hands'], figStart:'wall', figEnd:'wallslide', tempo:'2-2-2', dose:'3 x 10',
+ cueDo:'Hands on the wall at chest height. Press the wall away so the shoulder blades slide apart, then let them settle back.',
+ cueAvoid:'Do not lock the elbows. Do not shrug.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'wall_slide', name:'Wall slide', region:'shoulder_elbow', phase:2, chain:'closed', contraction:'mixed', rom:'mid_range', position:'standing',
+ joints:['shoulder','elbow'], proprio:2, balance:0, wristExt:'none', cervical:'low', trunk:'med', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:[], figStart:'wall', figEnd:'wallslide', tempo:'3-1-3', dose:'2 x 8',
+ cueDo:'Forearms on the wall. Slide them upward only as far as you can go without the ribs flaring or the shoulders shrugging.',
+ cueAvoid:'Do not chase height. Stop where the control stops.',
+ tier:1, sport:{volleyball:5}},
+
+{id:'elbow_iso', name:'Elbow isometric at 90 degrees', region:'shoulder_elbow', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['elbow'], proprio:1, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'seated', figEnd:'seated', tempo:'hold 8s', dose:'2 x 6 each direction',
+ cueDo:'Elbow bent to a right angle. Press into your other hand to bend, then to straighten, holding each without the arm travelling.',
+ cueAvoid:'Never work at a locked or hyperextended elbow. Keep the angle at 90.',
+ tier:1, sport:{volleyball:4}},
+
+/* ===== NECK ===== */
+{id:'chin_tuck', name:'Supine chin tuck', region:'neck', phase:1, chain:'closed', contraction:'isometric', rom:'mid_range', position:'supine',
+ joints:['neck'], proprio:2, balance:0, wristExt:'none', cervical:'med', trunk:'low', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home'], mods:['towel_neck'], figStart:'supineflat', figEnd:'neck', tempo:'hold 5s', dose:'2 x 8',
+ cueDo:'Lying down with a towel roll supporting the neck. Draw the chin gently back toward the floor and hold.',
+ cueAvoid:'Do not lift the head. Do not force the range.',
+ tier:1, sport:{}},
+
+{id:'neck_iso', name:'Neck isometric holds', region:'neck', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
+ joints:['neck'], proprio:2, balance:0, wristExt:'none', cervical:'med', trunk:'none', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'neck', figEnd:'neck', tempo:'hold 5s', dose:'2 x 5 each direction',
+ cueDo:'Head in neutral. Press lightly into your own hand in each direction. The head does not travel at all.',
+ cueAvoid:'Very light pressure only. If the head is turning, you are pressing too hard.',
+ tier:1, sport:{}},
+
+/* ===== TRUNK (clinician gated) ===== */
+{id:'dead_bug', name:'Dead bug, heels down', region:'trunk', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'supine',
+ joints:['spine','hip'], proprio:2, balance:0, wristExt:'none', cervical:'low', trunk:'high', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['towel_neck'], figStart:'supineflat', figEnd:'supine', tempo:'slow', dose:'2 x 8 each',
+ cueDo:'Lying down, knees bent. Slide one heel out along the floor while the lower back stays exactly where it is, then return.',
+ cueAvoid:'Do not let the lower back arch away from the floor. If it lifts, shorten the slide.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'bird_dog', name:'Bird dog', region:'trunk', phase:2, chain:'closed', contraction:'isometric', rom:'mid_range', position:'quadruped',
+ joints:['spine','hip','shoulder','wrist'], proprio:3, balance:2, wristExt:'high', cervical:'med', trunk:'high', impact:'none', autonomic:'low',
+ equip:['none'], spaces:['home','gym'], mods:['elevated_hands'], figStart:'quad', figEnd:'quad', tempo:'hold 5s', dose:'2 x 8 each',
+ cueDo:'On hands and knees. Reach one arm forward, keeping the trunk completely still.',
+ cueAvoid:'Do not lock the supporting elbow. Do not let the back sag or twist.',
+ tier:1, sport:{volleyball:4}},
+
+{id:'side_plank_knee', name:'Side plank from the knees', region:'trunk', phase:2, chain:'closed', contraction:'isometric', rom:'mid_range', position:'side',
+ joints:['spine','hip','shoulder'], proprio:2, balance:2, wristExt:'none', cervical:'low', trunk:'high', impact:'none', autonomic:'med',
+ equip:['none'], spaces:['home','gym'], mods:[], figStart:'sidelie', figEnd:'sidelie', tempo:'hold', dose:'3 x 20s each',
+ cueDo:'On your side, supported on the forearm and knees. Lift the hips to a straight line and hold.',
+ cueAvoid:'Do not let the supporting shoulder collapse. Do not hold if the trunk is restricted.',
+ tier:1, sport:{volleyball:4}}
+];
+
+const REGIONS = {
+  foot_ankle:{label:'Foot & ankle', short:'FT'},
+  knee_hip:{label:'Knee & hip', short:'KN'},
+  wrist_hand:{label:'Wrist & hand', short:'WR'},
+  shoulder_elbow:{label:'Shoulder & elbow', short:'SH'},
+  neck:{label:'Neck', short:'NK'},
+  trunk:{label:'Trunk & spine', short:'TR'}
+};
+
+/* ---------- rating rubrics ---------- */
+const CONTROL = [
+  {n:5, t:'Full range, tempo exact, no shaking. Joints stayed inside the target range. Two or more reps left in you.'},
+  {n:4, t:'Tempo held. Minor shaking on the last rep or two. Range stayed correct. One or two reps in reserve.'},
+  {n:3, t:'Tempo slipped on the last set. Noticeable shaking. Had to shorten the range or brace to finish.'},
+  {n:2, t:'Position gave way — a joint travelled past where it should, or the range changed without you choosing it.'},
+  {n:1, t:'Could not complete the set in the intended position at all.'}
+];
+const SYMPTOM = [
+  {n:0, t:'Nothing.'},
+  {n:2, t:'You notice the joint but it does not change what you are doing. Gone within an hour.'},
+  {n:4, t:'A definite ache in the joint during the set. Still noticeable a few hours later.'},
+  {n:6, t:'You changed how you did the exercise because of it. Still there the next morning.'},
+  {n:8, t:'You stopped the exercise. It affects ordinary daily activity.'},
+  {n:10, t:'Sharp pain, a sense of giving way, or you cannot use the joint normally.'}
+];
+const SORENESS = [
+  {n:0, t:'None.'},
+  {n:3, t:'Mild muscle ache. Expected and fine.'},
+  {n:6, t:'Clearly sore muscles. Still fine, but note it.'},
+  {n:9, t:'Very sore muscles, affecting normal activity.'}
+];
+
+/* ---------- state ---------- */
+const KEY = 'range.v1';
+let S = {
+  logs: [], sessions: [], morning: [],
+  restrictions: [{id:'trunk_clin', label:'Trunk loading', scope:'trunk', level:'med',
+    note:'Set while a spinal structure is healing. Only your clinician clears this.', setBy:'clinician', cleared:false}],
+  settings:{ timer:false, workSec:40, restSec:45, spaces:['home'], equip:['none','band','ball','step'] },
+  active:null
+};
+let view = 'today', filters = {region:'all', space:'all'}, sheetCtx = null;
+
+async function load(){
+  const raw = await Store.get(KEY);
+  if (raw){ try { S = Object.assign(S, JSON.parse(raw)); } catch(e){} }
+}
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(()=>Store.set(KEY, JSON.stringify(S)), 180); }
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+const exById = id => EX.find(e=>e.id===id);
+const uid = () => Math.random().toString(36).slice(2,10);
+
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+const TRUNK_RANK = {none:0, low:1, med:2, high:3};
+function blockedBy(ex){
+  for (const r of S.restrictions){
+    if (r.cleared) continue;
+    if (r.scope==='trunk' && TRUNK_RANK[ex.trunk] >= TRUNK_RANK[r.level]) return r;
+    if (r.scope==='region' && ex.region===r.level) return r;
+  }
+  return null;
+}
+function visibleEx(){
+  return EX.filter(e=>{
+    if (filters.region!=='all' && e.region!==filters.region) return false;
+    if (filters.space!=='all' && !e.spaces.includes(filters.space)) return false;
+    return true;
+  });
+}
+function activeMods(exId){
+  const rec = S.settings['mods_'+exId];
+  return rec ? rec : (exById(exId)?.mods || []).filter(m => MODMAP[m] && MODMAP[m].perm==='boundary');
+}
+function lastLog(exId){
+  const l = S.logs.filter(x=>x.exId===exId);
+  return l.length ? l[l.length-1] : null;
+}
+
+/* ---------- range bar (the signature element) ---------- */
+function rangeBar(ex, mods){
+  const hasBoundary = mods.some(m => MODMAP[m] && MODMAP[m].perm==='boundary');
+  let safe = ex.rom === 'mid_range' ? 62 : ex.rom === 'full' ? 82 : 94;
+  if (hasBoundary) safe = Math.min(safe, 55);
+  return `<div class="rangebar">
+    <div class="rangebar-track">
+      <div class="rb-safe" style="width:${safe}%"></div>
+      <div class="rb-end">${hasBoundary?'<span class="rb-lock">LOCKED</span>':''}</div>
+    </div>
+    <div class="rangebar-labels">
+      <span>Working range</span>
+      <span class="end">${hasBoundary?'Boundary set':'End range — not trained'}</span>
+    </div>
+  </div>`;
+}
+
+/* ---------- exercise tags ---------- */
+function exTags(ex){
+  const t = [];
+  t.push(`<span class="tag teal">${ex.chain}</span>`);
+  t.push(`<span class="tag teal">${ex.contraction}</span>`);
+  t.push(`<span class="tag ochre">${ex.rom.replace('_',' ')}</span>`);
+  t.push(`<span class="tag">${ex.position}</span>`);
+  if (ex.proprio>=2) t.push(`<span class="tag slate">position sense ${ex.proprio}/3</span>`);
+  if (ex.balance>=2) t.push(`<span class="tag slate">balance ${ex.balance}/3</span>`);
+  if (ex.wristExt==='high') t.push(`<span class="tag rust">wrist extension</span>`);
+  if (ex.cervical==='med'||ex.cervical==='high') t.push(`<span class="tag rust">neck load</span>`);
+  if (ex.trunk==='med'||ex.trunk==='high') t.push(`<span class="tag rust">trunk load</span>`);
+  if (ex.impact!=='none') t.push(`<span class="tag rust">impact</span>`);
+  return `<div class="tags">${t.join('')}</div>`;
+}
+
+/* ---------- screens ---------- */
+function screenToday(){
+  const t = today();
+  const doneToday = S.logs.filter(l=>l.date===t);
+  const blocked = EX.filter(e=>blockedBy(e)).length;
+  const presets = [
+    {id:'p_feet', name:'Feet and ankles', ex:['short_foot','toe_spread','calf_seated','ankle_evert','sls'], mins:12},
+    {id:'p_lower', name:'Lower body stability', ex:['wall_sit','chair_squat','hip_abd_side','tke','sls','calf_stand'], mins:18},
+    {id:'p_upper', name:'Upper body and hands', ex:['scap_set','er_iso','serratus','wrist_iso','finger_ext','elbow_iso'], mins:15},
+    {id:'p_short', name:'Short day', ex:['short_foot','wall_sit','scap_set','neck_iso'], mins:8}
+  ];
+  return `
+  <div class="topbar"><div><div class="eyebrow">${new Date().toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'})}</div><h1>Today</h1></div></div>
+
+  <div class="banner clinician">
+    <div class="eyebrow">Clinician layer — active</div>
+    <h3>Trunk loading is restricted</h3>
+    <p>${blocked} exercise${blocked===1?'':'s'} hidden from sessions. This clears when your clinician clears it, not when the app decides you are ready.</p>
+  </div>
+
+  ${S.active ? `<div class="card"><div class="card-h"><h3>Session in progress</h3><span class="sub mono">${S.active.ex.length} exercises</span></div>
+    <button class="btn btn-primary btn-wide" data-go="session">Resume session</button></div>` : ''}
+
+  <div class="card">
+    <div class="card-h"><h3>Start a session</h3></div>
+    <p class="sub" style="margin-bottom:12px">Groupings, not prescriptions. Anything your clinician has restricted is already filtered out.</p>
+    ${presets.map(p=>{
+      const list = p.ex.filter(id=>{const e=exById(id); return e && !blockedBy(e);});
+      return `<button class="exrow" data-preset="${p.id}" style="border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--paper)">
+        <div class="regionmark mono">${p.mins}<span style="font-size:7px">m</span></div>
+        <div class="exrow-body"><h4>${p.name}</h4><div class="sub">${list.length} exercises</div></div>
+      </button>`;
+    }).join('')}
+    <button class="btn btn-quiet btn-wide" style="margin-top:5px" data-go="library">Build one from the library</button>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Logged today</h3><span class="sub mono">${doneToday.length} sets</span></div>
+    ${doneToday.length ? doneToday.slice(-6).map(l=>{
+      const e = exById(l.exId); const c = l.symptom>=5?'var(--rust)':l.symptom>=3?'var(--ochre)':'var(--teal)';
+      return `<div class="setline"><span class="dot" style="background:${c}"></span>
+        <span style="flex:1">${esc(e?e.name:l.exId)}</span>
+        <span class="val">${l.load?l.load+' lb · ':''}${l.reps||'—'}</span>
+        <span class="trend-tag">c${l.control} · s${l.symptom}</span></div>`;
+    }).join('') : `<p class="sub">Nothing yet. A short session counts the same as a long one.</p>`}
+  </div>
+
+  <p class="disclaim">Nothing in this app is prescribed. It is a library you can browse and a log you can keep. Take the exercise list to your PT before adding anything new, especially anything that loads your spine.</p>
+  `;
+}
+
+function screenLibrary(){
+  const list = visibleEx();
+  const regionChips = ['all', ...Object.keys(REGIONS)];
+  return `
+  <div class="topbar"><div><div class="eyebrow">${EX.length} exercises · ${MODS.length} modifications</div><h1>Library</h1></div></div>
+  <div class="filterbar">
+    ${regionChips.map(r=>`<button class="chip" data-filter="region" data-val="${r}" aria-pressed="${filters.region===r}">${r==='all'?'All regions':REGIONS[r].label}</button>`).join('')}
+  </div>
+  <div class="filterbar" style="padding-top:0">
+    ${['all','home','gym','outdoor'].map(s=>`<button class="chip" data-filter="space" data-val="${s}" aria-pressed="${filters.space===s}">${s==='all'?'Any space':s[0].toUpperCase()+s.slice(1)}</button>`).join('')}
+  </div>
+  <div class="card flush">
+    ${list.length? list.map(e=>{
+      const b = blockedBy(e);
+      return `<button class="exrow ${b?'locked':''}" data-ex="${e.id}">
+        <div class="regionmark">${REGIONS[e.region].short}</div>
+        <div class="exrow-body">
+          <h4>${esc(e.name)}</h4>
+          <div class="sub">${b ? 'Restricted — '+b.label.toLowerCase() : e.dose + ' · ' + e.rom.replace('_',' ')}</div>
+        </div>
+      </button>`;
+    }).join('') : `<div class="empty"><h3>Nothing matches</h3><p>Widen the filters.</p></div>`}
+  </div>`;
+}
+
+function screenHistory(){
+  const days = [];
+  for (let i=13;i>=0;i--){ const d = new Date(); d.setDate(d.getDate()-i); days.push(d.toISOString().slice(0,10)); }
+  const byDay = Object.fromEntries(days.map(d=>[d, S.logs.filter(l=>l.date===d).length]));
+  const exSeen = [...new Set(S.logs.map(l=>l.exId))];
+  return `
+  <div class="topbar"><div><div class="eyebrow">${S.logs.length} sets logged</div><h1>Log</h1></div></div>
+
+  <div class="card">
+    <div class="card-h"><h3>Last fourteen days</h3></div>
+    <div class="daygrid">${days.map(d=>`<div class="daycell ${byDay[d]>=3?'done':byDay[d]>0?'partial':''} ${d===today()?'today':''}"></div>`).join('')}</div>
+    <p class="sub">Filled means three or more sets. There is no streak here on purpose.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>By exercise</h3></div>
+    ${exSeen.length ? exSeen.map(id=>{
+      const e = exById(id); const logs = S.logs.filter(l=>l.exId===id);
+      const last = logs[logs.length-1]; const prev = logs.length>1 ? logs[logs.length-2] : null;
+      let tag = 'first time';
+      if (prev){
+        if ((last.load||0) > (prev.load||0)) tag = 'load up';
+        else if ((last.load||0) === (prev.load||0)) tag = 'load held';
+        else tag = 'load down';
+      }
+      const avgSym = (logs.reduce((a,l)=>a+l.symptom,0)/logs.length).toFixed(1);
+      return `<div class="trend">
+        <span class="trend-name">${esc(e?e.name:id)}</span>
+        <span class="trend-val">${last.load?last.load+' lb':last.reps+' reps'}</span>
+        <span class="trend-tag">${tag}</span>
+        <span class="trend-tag">sym ${avgSym}</span>
+      </div>`;
+    }).join('') : `<p class="sub">Nothing logged yet.</p>`}
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Morning check</h3></div>
+    <p class="sub" style="margin-bottom:11px">Delayed response is the real signal. How are the joints you flagged yesterday?</p>
+    <div class="btn-row">
+      ${['Better','Same','Worse'].map(d=>`<button class="btn btn-quiet btn-sm" style="flex:1" data-morning="${d}">${d}</button>`).join('')}
+    </div>
+    ${S.morning.slice(-3).reverse().map(m=>`<div class="setline"><span class="idx">${m.date.slice(5)}</span><span style="flex:1">${m.dir}</span></div>`).join('')}
+  </div>`;
+}
+
+function screenYou(){
+  const st = S.settings;
+  return `
+  <div class="topbar"><div><div class="eyebrow">Saved to ${Store.where()}</div><h1>You</h1></div></div>
+
+  <div class="card">
+    <div class="card-h"><h3>Restrictions</h3></div>
+    <p class="sub" style="margin-bottom:8px">A restriction is never cleared by a good week or a streak. Only by the person who set it.</p>
+    ${S.restrictions.map(r=>`<div class="switchrow">
+      <div><strong>${esc(r.label)}</strong><div class="sub">${esc(r.note)}</div></div>
+      <button class="mod-toggle boundary" data-restr="${r.id}" aria-pressed="${!r.cleared}"><span></span></button>
+    </div>`).join('')}
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Timed player</h3></div>
+    <div class="switchrow">
+      <div><strong>Time my sets</strong><div class="sub">Off by default. Cues lower your music rather than stopping it.</div></div>
+      <button class="mod-toggle" data-set="timer" aria-pressed="${st.timer}"><span></span></button>
+    </div>
+    <div class="numgrid" style="margin-top:13px">
+      <div class="numfield"><label>Work (sec)</label><input type="number" inputmode="numeric" data-num="workSec" value="${st.workSec}"></div>
+      <div class="numfield"><label>Rest (sec)</label><input type="number" inputmode="numeric" data-num="restSec" value="${st.restSec}"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Rating scales</h3></div>
+    <p class="sub" style="margin-bottom:10px">The one distinction that makes this log useful: muscle burn is expected, joint pain is the signal. They are logged separately and only the joint score gates progression.</p>
+    <button class="btn btn-quiet btn-wide" data-sheet="rubric">Read the full scales</button>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h3>Your data</h3></div>
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-quiet btn-sm" style="flex:1" data-export="1">Export as text</button>
+      <button class="btn btn-quiet btn-sm" style="flex:1" data-reset="1">Erase everything</button>
+    </div>
+  </div>
+
+  <p class="disclaim">Built for one person. Not medical advice, not a diagnosis, and not a substitute for a clinician who can actually look at your joints.</p>`;
+}
+
+/* ---------- session runner ---------- */
+function screenSession(){
+  if (!S.active) return screenToday();
+  const a = S.active;
+  return `
+  <div class="topbar"><div><div class="eyebrow">Session · ${a.done.length} of ${a.ex.length} logged</div><h1>${esc(a.name)}</h1></div></div>
+  ${S.settings.timer ? timerBlock() : ''}
+  <div class="card flush">
+    ${a.ex.map((id,i)=>{
+      const e = exById(id); if(!e) return '';
+      const logged = a.done.filter(d=>d===id).length;
+      const mods = activeMods(id);
+      const boundary = mods.filter(m=>MODMAP[m]&&MODMAP[m].perm==='boundary');
+      return `<button class="exrow" data-log="${id}">
+        <div class="regionmark" style="${logged?'background:var(--teal);color:#fff;border-color:var(--teal)':''}">${logged?logged:REGIONS[e.region].short}</div>
+        <div class="exrow-body">
+          <h4>${esc(e.name)}</h4>
+          <div class="sub">${e.dose} · tempo ${e.tempo}</div>
+          ${boundary.length?`<div class="tags"><span class="tag ochre">${boundary.map(m=>MODMAP[m].name).join(' · ')}</span></div>`:''}
+        </div>
+      </button>`;
+    }).join('')}
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-quiet" style="flex:1" data-endsession="stop">Stop here</button>
+    <button class="btn btn-primary" style="flex:1" data-endsession="done">Finish</button>
+  </div>
+  <p class="disclaim">Stopping early is a legitimate outcome and is recorded the same way as finishing. Nothing is lost.</p>`;
+}
+
+/* ---------- timer ---------- */
+let T = {on:false, phase:'work', left:0, iv:null, actx:null};
+function timerBlock(){
+  const m = String(Math.floor(T.left/60)).padStart(1,'0'), s = String(T.left%60).padStart(2,'0');
+  return `<div class="card">
+    <div class="timer ${T.phase==='rest'?'rest':''}">
+      <div class="timer-n">${T.on? m+':'+s : String(S.settings.workSec).padStart(2,'0')}</div>
+      <div class="timer-lab">${T.on ? (T.phase==='work'?'Working':'Resting') : 'Ready'}</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-quiet" style="flex:1" data-timer="${T.on?'stop':'work'}">${T.on?'Stop':'Start work'}</button>
+      <button class="btn btn-quiet" style="flex:1" data-timer="rest">Rest</button>
+    </div>
+  </div>`;
+}
+function cue(freq=880, dur=0.14){
+  try{
+    if(!T.actx) T.actx = new (window.AudioContext||window.webkitAudioContext)();
+    if(T.actx.state==='suspended') T.actx.resume();
+    const o = T.actx.createOscillator(), g = T.actx.createGain();
+    o.frequency.value = freq; o.type='sine'; o.connect(g); g.connect(T.actx.destination);
+    g.gain.setValueAtTime(0.0001, T.actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.25, T.actx.currentTime+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, T.actx.currentTime+dur);
+    o.start(); o.stop(T.actx.currentTime+dur+0.02);
+  }catch(e){}
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+function startTimer(phase){
+  clearInterval(T.iv);
+  T.on = true; T.phase = phase;
+  T.left = phase==='work' ? S.settings.workSec : S.settings.restSec;
+  cue(phase==='work'?880:520);
+  T.iv = setInterval(()=>{
+    T.left--;
+    if (T.left===3) cue(660,.09);
+    if (T.left<=0){
+      cue(phase==='work'?520:880, .22);
+      clearInterval(T.iv);
+      if (phase==='work'){ startTimer('rest'); return; }
+      T.on=false;
+    }
+    render();
+  },1000);
+  render();
+}
+function stopTimer(){ clearInterval(T.iv); T.on=false; T.left=0; render(); }
+
+/* ---------- sheets ---------- */
+function openSheet(title, body, ctx){
+  sheetCtx = ctx || null;
+  $('sheet-title').textContent = title;
+  $('sheet-body').innerHTML = body;
+  $('sheet').classList.add('open'); $('sheetbg').classList.add('open');
+  $('sheet-body').parentElement.scrollTop = 0;
+}
+function closeSheet(){ $('sheet').classList.remove('open'); $('sheetbg').classList.remove('open'); sheetCtx=null; }
+
+function sheetExercise(id){
+  const e = exById(id); if(!e) return;
+  const mods = activeMods(id);
+  const b = blockedBy(e);
+  const avail = MODS.filter(m => (e.mods||[]).includes(m.id));
+  const body = `
+    ${b?`<div class="note"><b>Restricted</b>${esc(b.label)} — ${esc(b.note)} This exercise stays out of your sessions until that is cleared in You.</div>`:''}
+    <div class="frames">
+      <div class="frame">${fig(e.figStart)}<span>Start</span></div>
+      <div class="frame">${fig(e.figEnd)}<span>End</span></div>
+    </div>
+    <p class="sub" style="margin-bottom:12px">Schematic placeholders. Replace with your own photos once you have run each one.</p>
+    ${rangeBar(e, mods)}
+    ${exTags(e)}
+    <div style="height:16px"></div>
+    <div class="cue cue-do"><b>Do</b>${esc(e.cueDo)}</div>
+    <div class="cue cue-avoid"><b>Avoid</b>${esc(e.cueAvoid)}</div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-h"><h3>Dose</h3><span class="mono sub">${e.dose} · tempo ${e.tempo}</span></div>
+    </div>
+    ${avail.length?`<div class="card">
+      <div class="card-h"><h3>Modifications</h3></div>
+      <p class="sub">A boundary sets a limit and never comes off. A support is scaffolding and removing it is progression. A challenge adds demand.</p>
+      ${avail.map(m=>`<div class="mod">
+        <button class="mod-toggle ${m.perm==='boundary'?'boundary':''}" data-mod="${e.id}|${m.id}" aria-pressed="${mods.includes(m.id)}"><span></span></button>
+        <div class="mod-body"><strong>${esc(m.name)}<span class="perm ${m.perm}">${m.perm}</span></strong>
+          <div class="sub">${esc(m.why)}</div>
+          <div class="sub mono" style="font-size:11px;margin-top:3px">needs: ${esc(m.equip)}</div>
+        </div>
+      </div>`).join('')}
+    </div>`:''}
+    ${b?'':`<button class="btn btn-primary btn-wide" style="margin-top:6px" data-addto="${e.id}">Add to today's session</button>`}
+    <button class="btn btn-quiet btn-wide" style="margin-top:9px" data-log="${e.id}">Log a set now</button>
+  `;
+  openSheet(e.name, body, {ex:id});
+}
+
+function optRow(group, item, sel){
+  return `<button class="opt" data-opt="${group}|${item.n}" aria-pressed="${sel===item.n}">
+    <span class="opt-n">${item.n}</span><span class="opt-def">${esc(item.t)}</span></button>`;
+}
+let logDraft = {};
+function sheetLog(id){
+  const e = exById(id); if(!e) return;
+  const last = lastLog(id);
+  logDraft = {exId:id, load:last?last.load:'', reps:last?last.reps:'', control:null, symptom:null, soreness:null, joint:e.joints[0]};
+  renderLogSheet();
+}
+function renderLogSheet(){
+  const e = exById(logDraft.exId);
+  const last = lastLog(logDraft.exId);
+  const body = `
+    ${last?`<div class="note"><b>Last time</b>${last.load?last.load+' lb · ':''}${last.reps} reps · control ${last.control} · joint ${last.symptom}. Load rises only with control 4 or better and joint 2 or lower.</div>`:''}
+    <div class="numgrid">
+      <div class="numfield"><label>Weight (lb)</label><input type="number" inputmode="decimal" data-draft="load" value="${logDraft.load}" placeholder="—"></div>
+      <div class="numfield"><label>Reps or seconds</label><input type="number" inputmode="numeric" data-draft="reps" value="${logDraft.reps}" placeholder="—"></div>
+    </div>
+    <div class="rating">
+      <div class="rating-lab"><strong>Control</strong><span class="hint">how the set actually went</span></div>
+      ${CONTROL.map(c=>optRow('control',c,logDraft.control)).join('')}
+    </div>
+    <div class="rating">
+      <div class="rating-lab"><strong>Joint symptom</strong><span class="hint">the joint, not the muscle</span></div>
+      <div class="note"><b>Read this first</b>This scale is for the joint only. Muscle burning during a set and soreness afterward are expected and belong in the next question.</div>
+      <div class="field"><label>Which joint</label><select data-draft="joint">${e.joints.map(j=>`<option ${logDraft.joint===j?'selected':''}>${j}</option>`).join('')}</select></div>
+      ${SYMPTOM.map(c=>optRow('symptom',c,logDraft.symptom)).join('')}
+    </div>
+    <div class="rating">
+      <div class="rating-lab"><strong>Muscle soreness</strong><span class="hint">expected, does not gate anything</span></div>
+      ${SORENESS.map(c=>optRow('soreness',c,logDraft.soreness)).join('')}
+    </div>
+    <button class="btn btn-primary btn-wide" data-savelog="1">Save this set</button>
+  `;
+  openSheet('Log — '+e.name, body, {log:true});
+}
+
+function sheetRubric(){
+  const body = `
+  <p class="sub" style="margin-bottom:16px">Both scales are written out so the numbers mean the same thing every time. That is the only way the log is worth keeping.</p>
+  <div class="card"><div class="card-h"><h3>Control</h3></div>
+    ${CONTROL.map(c=>`<div class="setline"><span class="idx mono">${c.n}</span><span style="flex:1;font-size:13.5px">${esc(c.t)}</span></div>`).join('')}
+    <p class="sub" style="margin-top:10px">Progression needs 4 or better. A 2 drops the load. A 1 sends the exercise back one step.</p>
+  </div>
+  <div class="card"><div class="card-h"><h3>Joint symptom</h3></div>
+    ${SYMPTOM.map(c=>`<div class="setline"><span class="idx mono">${c.n}</span><span style="flex:1;font-size:13.5px">${esc(c.t)}</span></div>`).join('')}
+    <p class="sub" style="margin-top:10px">Progression needs 2 or lower. 5 or above holds the load and prompts a modification. 7 or above ends that region for the day.</p>
+  </div>
+  <div class="card"><div class="card-h"><h3>Muscle soreness</h3></div>
+    ${SORENESS.map(c=>`<div class="setline"><span class="idx mono">${c.n}</span><span style="flex:1;font-size:13.5px">${esc(c.t)}</span></div>`).join('')}
+    <p class="sub" style="margin-top:10px">Logged so it does not get confused with joint pain. It gates nothing.</p>
+  </div>`;
+  openSheet('Rating scales', body);
+}
+
+/* ---------- render + router ---------- */
+const TABS = [
+  {id:'today', label:'Today', d:'M4 5h16v15H4z M4 10h16 M9 3v4 M15 3v4'},
+  {id:'library', label:'Library', d:'M5 4h5v16H5z M12 4h3v16h-3z M17 5l3 14'},
+  {id:'history', label:'Log', d:'M4 19V6 M4 19h16 M8 15v-5 M12 15V8 M16 15v-3'},
+  {id:'you', label:'You', d:'M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 21c0-4 3.6-6 8-6s8 2 8 6'}
+];
+function render(){
+  const map = {today:screenToday, library:screenLibrary, session:screenSession, history:screenHistory, you:screenYou};
+  $('screen').innerHTML = (map[view]||screenToday)();
+  $('tabbar').innerHTML = TABS.map(t=>`<button class="tab" data-tab="${t.id}" aria-current="${(view===t.id||(view==='session'&&t.id==='today'))?'page':'false'}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${t.d}"/></svg>
+    <span>${t.label}</span></button>`).join('');
+  window.scrollTo(0,0);
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click', ev => {
+  const el = ev.target.closest('[data-tab],[data-go],[data-ex],[data-filter],[data-preset],[data-mod],[data-addto],[data-log],[data-opt],[data-savelog],[data-endsession],[data-timer],[data-restr],[data-set],[data-sheet],[data-morning],[data-export],[data-reset]');
+  if (!el) return;
+  const d = el.dataset;
+
+  if (d.tab){ view = d.tab; closeSheet(); render(); return; }
+  if (d.go){ view = d.go; closeSheet(); render(); return; }
+  if (d.sheet==='rubric'){ sheetRubric(); return; }
+  if (d.ex){ sheetExercise(d.ex); return; }
+
+  if (d.filter){ filters[d.filter] = d.val; render(); return; }
+
+  if (d.preset){
+    const presets = {
+      p_feet:{name:'Feet and ankles', ex:['short_foot','toe_spread','calf_seated','ankle_evert','sls']},
+      p_lower:{name:'Lower body stability', ex:['wall_sit','chair_squat','hip_abd_side','tke','sls','calf_stand']},
+      p_upper:{name:'Upper body and hands', ex:['scap_set','er_iso','serratus','wrist_iso','finger_ext','elbow_iso']},
+      p_short:{name:'Short day', ex:['short_foot','wall_sit','scap_set','neck_iso']}
+    };
+    const p = presets[d.preset];
+    S.active = {id:uid(), date:today(), name:p.name, ex:p.ex.filter(i=>{const e=exById(i);return e&&!blockedBy(e);}), done:[]};
+    save(); view='session'; render(); return;
+  }
+
+  if (d.mod){
+    const [exId, modId] = d.mod.split('|');
+    const cur = activeMods(exId).slice();
+    const i = cur.indexOf(modId);
+    const m = MODMAP[modId];
+    if (i>=0){
+      if (m.perm==='boundary' && !confirm('This is a boundary, not scaffolding. It is there to keep the joint inside normal range, and removing it is not progression.\n\nRemove it anyway?')) return;
+      cur.splice(i,1);
+    } else cur.push(modId);
+    S.settings['mods_'+exId] = cur; save(); sheetExercise(exId); return;
+  }
+
+  if (d.addto){
+    if (!S.active) S.active = {id:uid(), date:today(), name:'Session', ex:[], done:[]};
+    if (!S.active.ex.includes(d.addto)) S.active.ex.push(d.addto);
+    save(); closeSheet(); toast('Added to today'); view='session'; render(); return;
+  }
+
+  if (d.log){ sheetLog(d.log); return; }
+
+  if (d.opt){
+    const [g,n] = d.opt.split('|'); logDraft[g] = Number(n); renderLogSheet(); return;
+  }
+
+  if (d.savelog){
+    if (logDraft.control==null || logDraft.symptom==null){ toast('Control and joint symptom are both needed'); return; }
+    S.logs.push({id:uid(), date:today(), exId:logDraft.exId, load:Number(logDraft.load)||0, reps:Number(logDraft.reps)||0,
+      control:logDraft.control, symptom:logDraft.symptom, soreness:logDraft.soreness??0, joint:logDraft.joint,
+      mods:activeMods(logDraft.exId)});
+    if (S.active && !S.active.done) S.active.done=[];
+    if (S.active) S.active.done.push(logDraft.exId);
+    save(); closeSheet();
+    const msg = logDraft.symptom>=5 ? 'Logged. Joint at '+logDraft.symptom+' — hold the load next time.'
+      : logDraft.control>=4 && logDraft.symptom<=2 ? 'Logged. Gate met.' : 'Logged.';
+    toast(msg); render(); return;
+  }
+
+  if (d.endsession){
+    if (S.active){ S.sessions.push({...S.active, status:d.endsession}); S.active=null; save(); }
+    stopTimer(); view='today'; render();
+    toast(d.endsession==='stop' ? 'Stopped and recorded.' : 'Session recorded.'); return;
+  }
+
+  if (d.timer){ d.timer==='stop' ? stopTimer() : startTimer(d.timer); return; }
+
+  if (d.restr){
+    const r = S.restrictions.find(x=>x.id===d.restr);
+    if (!r.cleared && !confirm('A restriction is cleared by the person who set it, not by the app.\n\nHas your clinician cleared this?')) return;
+    r.cleared = !r.cleared; save(); render(); return;
+  }
+
+  if (d.set){ S.settings[d.set] = !S.settings[d.set]; save(); render(); return; }
+
+  if (d.morning){ S.morning.push({date:today(), dir:d.morning}); save(); render(); toast('Noted.'); return; }
+
+  if (d.export){
+    const rows = ['date,exercise,load_lb,reps,control,joint_symptom,joint,soreness,modifications'];
+    S.logs.forEach(l=>{ const e=exById(l.exId);
+      rows.push([l.date,(e?e.name:l.exId),l.load,l.reps,l.control,l.symptom,l.joint,l.soreness,(l.mods||[]).join(' + ')].join(',')); });
+    openSheet('Export', `<p class="sub" style="margin-bottom:12px">Select all and copy. This is the view to hand your PT.</p>
+      <textarea style="width:100%;height:340px;font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);border-radius:9px;padding:11px">${esc(rows.join('\n'))}</textarea>`);
+    return;
+  }
+
+  if (d.reset){
+    if (!confirm('Erase all logs, sessions and settings? This cannot be undone.')) return;
+    S.logs=[]; S.sessions=[]; S.morning=[]; S.active=null; save(); render(); toast('Erased.'); return;
+  }
+});
+
+document.addEventListener('input', ev => {
+  const t = ev.target;
+  if (t.dataset.draft){ logDraft[t.dataset.draft] = t.value; return; }
+  if (t.dataset.num){ S.settings[t.dataset.num] = Math.max(5, Number(t.value)||30); save(); return; }
+});
+document.addEventListener('change', ev => {
+  if (ev.target.dataset.draft==='joint'){ logDraft.joint = ev.target.value; }
+});
+$('sheet-close').addEventListener('click', closeSheet);
+$('sheetbg').addEventListener('click', closeSheet);
+
+/* ---------- boot ---------- */
+load().then(()=>{ render(); });
+</script>
+</body>
+</html>
