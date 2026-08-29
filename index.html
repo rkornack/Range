@@ -12,7 +12,7 @@
 <title>Range</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    Palette chosen by simulating deuteranopia, protanopia and
@@ -33,9 +33,9 @@
   --res:#384224; --res-soft:#EBECE9;   /* restorative    — diamond */
   --lim:#806A00; --lim-soft:#F2F0E6;   /* boundary */
 
-  --disp:'Bricolage Grotesque',system-ui,sans-serif;
+  --disp:'Archivo',system-ui,-apple-system,sans-serif;
   --body:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-  --mn:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  --mn:'Archivo',system-ui,-apple-system,sans-serif;   /* figures + micro-labels */
   --sb:env(safe-area-inset-bottom,0px); --st:env(safe-area-inset-top,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -43,10 +43,14 @@ html,body{margin:0;padding:0;background:var(--bg)}
 body{font-family:var(--body);font-size:16px;line-height:1.45;color:var(--ink);-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
 button,input,select,textarea{font:inherit;color:var(--ink)}
 button{background:none;border:none;padding:0;cursor:pointer;text-align:left}
-h1,h2,h3,h4{margin:0;font-family:var(--disp);font-weight:800;letter-spacing:-.025em;line-height:1.14;color:var(--ink)}
+h1,h2,h3,h4{margin:0;font-family:var(--disp);font-weight:700;letter-spacing:-.022em;line-height:1.16;color:var(--ink)}
 p{margin:0}
 :focus-visible{outline:3px solid var(--sta);outline-offset:2px;border-radius:3px}
 .mn{font-family:var(--mn);font-variant-numeric:tabular-nums}
+[class*="readout"],[class*="tm-n"],[class*="big"],[class*="val"],[class*="lbl"],[class*="pill"],
+[class*="purp"],[class*="perm"],[class*="on"],[class*="sportt"],[class*="kicker"],[class*="hd-num"],
+[class*="slotn"],[class*="rt"],[class*="wm"],.chip,.opt .on,.nf input,.nf label,.steps li::before{
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"lnum" 1}
 
 #app{max-width:620px;margin:0 auto;min-height:100dvh}
 .screen{padding:calc(var(--st) + 18px) 14px 136px}
@@ -64,7 +68,7 @@ p{margin:0}
 .sub{color:var(--ink-2);font-size:13.5px;line-height:1.46}
 .rule{height:1px;background:var(--line-2);margin:12px 0}
 
-/* alert — white panel, thick colour bar, never colour alone */
+/* alert — white panel, thick color bar, never color alone */
 .dk{background:var(--surf);border:1px solid var(--line-2);border-left:6px solid var(--ink-2);
   border-radius:7px;padding:13px 15px;margin-bottom:11px}
 .dk h3{font-size:15.5px;margin-bottom:4px}
@@ -79,14 +83,14 @@ p{margin:0}
 .dial{display:flex;align-items:center;gap:15px;padding:4px 0 2px}
 .dial svg{flex:0 0 auto}
 .dial-rd{flex:1;min-width:0}
-.dial-rd .big{font-family:var(--mn);font-size:24px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.dial-rd .big{font-family:var(--disp);font-size:23px;font-weight:700;letter-spacing:-.025em;line-height:1}
 .dial-rd .cap{font-family:var(--mn);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mute);margin-top:5px}
 .dial-rd .stop{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-family:var(--mn);font-size:10px;
   letter-spacing:.08em;text-transform:uppercase;color:var(--lim);background:var(--lim-soft);
   border:1px solid var(--lim);padding:3px 7px;border-radius:3px;font-weight:600}
 
 .readout{display:flex;align-items:flex-end;gap:3px;font-family:var(--mn);font-weight:600;letter-spacing:-.035em;line-height:.9}
-.readout .n{font-size:42px} .readout .u{font-size:14px;color:var(--mute);padding-bottom:5px;letter-spacing:0}
+.readout .n{font-size:40px;font-weight:700} .readout .u{font-size:14px;color:var(--mute);padding-bottom:5px;letter-spacing:0}
 .readgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line-2);border-radius:5px;overflow:hidden;margin:2px 0 4px}
 .readgrid>div{background:var(--surf);padding:12px 13px}
 
@@ -103,7 +107,7 @@ p{margin:0}
   display:grid;place-items:center;border:1px solid var(--line-2)}
 .thumb svg,.thumb img{width:100%;height:100%;display:block;object-fit:cover}
 
-/* category markers — colour PLUS shape PLUS text */
+/* category markers — color PLUS shape PLUS text */
 .purp{font-family:var(--mn);font-size:9px;letter-spacing:.09em;text-transform:uppercase;padding:3px 6px;
   border-radius:3px;font-weight:600;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent}
 .purp::before{content:'';width:8px;height:8px;background:currentColor;flex:0 0 auto}
@@ -221,7 +225,7 @@ p{margin:0}
 .note.m{background:var(--sta-soft);border-color:var(--sta)} .note.m b{color:var(--sta)}
 
 .tm{text-align:center;padding:14px 0 4px}
-.tm-n{font-family:var(--mn);font-size:60px;font-weight:500;letter-spacing:-.04em;line-height:1}
+.tm-n{font-family:var(--disp);font-size:58px;font-weight:700;letter-spacing:-.04em;line-height:1}
 .tm-l{font-family:var(--mn);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-top:7px}
 .tm.rest .tm-n{color:var(--sta)}
 
@@ -295,10 +299,12 @@ p{margin:0}
   align-items:center;justify-content:center;gap:2px;transition:opacity .5s ease,visibility .5s}
 #splash.gone{opacity:0;visibility:hidden;pointer-events:none}
 #splash .mk{width:190px;height:132px}
-#splash .wm{font-family:var(--disp);font-weight:800;font-size:44px;letter-spacing:.16em;color:var(--chas-text);
+#splash .wm{font-family:var(--disp);font-weight:700;font-size:42px;letter-spacing:.15em;color:var(--chas-text);
   margin-top:14px;opacity:0;animation:rise .6s .75s ease forwards;text-indent:.16em}
-#splash .tag{font-size:14.5px;line-height:1.5;color:var(--chas-mute);max-width:270px;text-align:center;
-  margin-top:12px;opacity:0;animation:rise .6s 1.05s ease forwards}
+#splash .tag{font-family:var(--disp);font-weight:600;font-size:19px;line-height:1.3;color:var(--chas-text);
+  letter-spacing:-.01em;text-align:center;margin-top:14px;opacity:0;animation:rise .6s 1.05s ease forwards}
+#splash .tag2{font-size:13.5px;line-height:1.6;color:var(--chas-mute);max-width:300px;text-align:center;
+  margin-top:9px;opacity:0;animation:rise .6s 1.3s ease forwards}
 #splash .skip{position:absolute;inset:0}
 @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .sweep{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw .85s .1s cubic-bezier(.4,0,.2,1) forwards}
@@ -316,13 +322,13 @@ p{margin:0}
 .band-top svg{width:30px;height:21px;flex:0 0 auto}
 .band-top .wm{font-family:var(--disp);font-weight:800;font-size:14.5px;letter-spacing:.15em;text-indent:.15em}
 .band-top .rt{margin-left:auto;font-family:var(--mn);font-size:10.5px;color:var(--chas-mute);letter-spacing:.05em}
-.band h1{font-size:32px;color:var(--chas-text);letter-spacing:-.03em}
+.band h1{font-size:30px;color:var(--chas-text);letter-spacing:-.035em;font-weight:700}
 .band .kicker{color:var(--chas-mute)}
 .band .kicker::before{background:var(--chas-line)}
 .band-hero{display:flex;align-items:center;gap:15px;margin-top:15px;padding-top:15px;border-top:1px solid var(--chas-line)}
 .band-hero svg{flex:0 0 auto}
 .band-hero .rd{flex:1;min-width:0}
-.band-hero .big{font-family:var(--mn);font-size:23px;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.band-hero .big{font-family:var(--disp);font-size:24px;font-weight:700;letter-spacing:-.025em;line-height:1.05}
 .band-hero .cap{font-size:12.5px;color:var(--chas-mute);margin-top:5px;line-height:1.42}
 
 .screen{padding-top:10px}
@@ -331,7 +337,7 @@ p{margin:0}
 .pan:nth-of-type(2){animation-delay:.04s} .pan:nth-of-type(3){animation-delay:.08s}
 .pan:nth-of-type(4){animation-delay:.12s} .pan:nth-of-type(n+5){animation-delay:.16s}
 @media (prefers-reduced-motion:reduce){
-  .pan,#splash .wm,#splash .tag,.sweep,.tick,.hatch,.pivot{animation:none!important;opacity:1!important;
+  .pan,#splash .wm,#splash .tag,#splash .tag2,.sweep,.tick,.hatch,.pivot{animation:none!important;opacity:1!important;
     stroke-dashoffset:0!important;transform:none!important}}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -339,6 +345,12 @@ p{margin:0}
 </style>
 </head>
 <body>
+<!-- ============================================================
+     TAGLINE — one line, change it here.
+     Line 1 (.tag)   Master your motion
+     Line 2 (.tag2)  Smart movement & training for hypermobile bodies. / Strength for the long run.
+     Either can be edited or deleted independently.
+     ============================================================ -->
 <div id="splash">
   <svg class="mk" viewBox="0 0 190 132" aria-label="Range">
     <g fill="none" stroke-linecap="butt">
@@ -349,7 +361,8 @@ p{margin:0}
     </g>
   </svg>
   <div class="wm">RANGE</div>
-  <div class="tag">Everything worth doing happens inside it.</div>
+  <div class="tag" id="tagline">Master your motion</div>
+  <div class="tag2" id="tagline2">Smart movement &amp; training for hypermobile bodies.<br>Strength for the long run.</div>
   <button class="skip" id="skip" aria-label="Continue"></button>
 </div>
 <div id="app"><div id="screen" class="screen"></div><nav class="tb" id="tbwrap"><div class="tb-in" id="tabbar"></div></nav></div>
@@ -360,7 +373,7 @@ p{margin:0}
 const MODS = [
   {id:'chair_stop', name:'Chair or box stop', perm:'boundary', why:'Sets a hard depth limit so the hip and knee stay inside normal range. This is not a training wheel — it stays.', equip:'chair or box', delta:{rom:'mid_range'}, locks:['depth']},
   {id:'lacrosse_ankles', name:'Lacrosse ball between ankles', perm:'boundary', why:'Holds foot and ankle alignment and adds an isometric squeeze so the ankles cannot splay outward.', equip:'lacrosse ball', delta:{proprio:1}, locks:['alignment']},
-  {id:'roller_knees', name:'Foam roller between knees', perm:'boundary', why:'Stops the knees travelling inward under load.', equip:'foam roller or block', delta:{}, locks:['knee_track']},
+  {id:'roller_knees', name:'Foam roller between knees', perm:'boundary', why:'Stops the knees traveling inward under load.', equip:'foam roller or block', delta:{}, locks:['knee_track']},
   {id:'depth_90', name:'Stop at 90 degrees', perm:'boundary', why:'Caps knee and hip flexion at a right angle. Going deeper adds range, not strength.', equip:'none', delta:{rom:'mid_range'}, locks:['depth']},
   {id:'stance_pos', name:'Stance foot position', perm:'support',
    why:'Where the stance foot sits decides how much work the side of the hip has to do. Under your midline, your weight is already over the foot and the hip barely has to hold anything. Under your hip, the hip has to hold the whole pelvis level on its own. Narrowing that gap is the progression.',
@@ -570,7 +583,7 @@ const EX = [
 {id:'elbow_iso', name:'Elbow isometric at 90 degrees', region:'shoulder_elbow', phase:1, chain:'open', contraction:'isometric', rom:'mid_range', position:'seated',
  joints:['elbow'], proprio:1, balance:0, wristExt:'none', cervical:'none', trunk:'none', impact:'none', autonomic:'low',
  equip:['none'], spaces:['home','gym','outdoor'], mods:[], figStart:'seated', figEnd:'seated', tempo:'hold 8s', dose:'2 x 6 each direction',
- cueDo:'Elbow bent to a right angle. Press into your other hand to bend, then to straighten, holding each without the arm travelling.',
+ cueDo:'Elbow bent to a right angle. Press into your other hand to bend, then to straighten, holding each without the arm traveling.',
  cueAvoid:'Never work at a locked or hyperextended elbow. Keep the angle at 90.',
  tier:1, sport:{volleyball:4}},
 
@@ -627,7 +640,7 @@ const CONTROL = [
   {n:5, t:'Full range, tempo exact, no shaking. Joints stayed inside the target range. Two or more reps left in you.'},
   {n:4, t:'Tempo held. Minor shaking on the last rep or two. Range stayed correct. One or two reps in reserve.'},
   {n:3, t:'Tempo slipped on the last set. Noticeable shaking. Had to shorten the range or brace to finish.'},
-  {n:2, t:'Position gave way — a joint travelled past where it should, or the range changed without you choosing it.'},
+  {n:2, t:'Position gave way — a joint traveled past where it should, or the range changed without you choosing it.'},
   {n:1, t:'Could not complete the set in the intended position at all.'}
 ];
 const SYMPTOM = [
@@ -702,7 +715,7 @@ step_down:{setup:["Stand on a low step, four to six inches, with one foot at the
  action:"Over four full seconds, lower the opposite heel toward the floor. Tap lightly. Return over two counts.",
  feel:"The front of the standing thigh working hard to control the descent. Watch the standing knee — it should track over the middle of your foot, not drift inward."},
 wrist_iso:{setup:["Rest your forearm on a table with your wrist straight and your hand off the edge.","Place your other hand against the back of your working hand."],
- action:"Press against your own hand for six seconds without the wrist travelling at all. Repeat pressing up, down, and to each side.",
+ action:"Press against your own hand for six seconds without the wrist traveling at all. Repeat pressing up, down, and to each side.",
  feel:"Effort in the forearm with no visible motion. If the wrist is bending, you are pressing too hard — back off."},
 finger_ext:{setup:["Loop a light band around all four fingers and your thumb.","Rest your hand in a relaxed, slightly closed position.","Keep your wrist straight."],
  action:"Open your hand against the band over two counts, stopping when the fingers reach straight. Close over three counts.",
@@ -1379,7 +1392,7 @@ band_row:{setup:["Sit on the floor or a chair with a band anchored in front of y
  feel:"Between and below the shoulder blades. Stop when the elbows reach your sides — taking them further behind you loads the front of the shoulder."},
 floor_press:{setup:["Lie on your back on the floor, knees bent, feet flat.","A dumbbell in each hand, upper arms resting on the floor at about 45 degrees from your body."],
  action:"Press the weights up over two counts, stopping short of locked elbows. Lower over three until your upper arms touch the floor.",
- feel:"Chest and the back of the arms. The floor is doing you a favour — it stops the shoulder travelling into the range where it is least stable."},
+ feel:"Chest and the back of the arms. The floor is doing you a favour — it stops the shoulder traveling into the range where it is least stable."},
 wall_pushup:{setup:["Stand facing a wall, hands flat at chest height and slightly wider than your shoulders.","Feet back far enough that your body is at a slight angle.","Elbows soft, never locked."],
  action:"Lower your chest toward the wall over three counts, pause, press away over two.",
  feel:"Chest, shoulders and the back of the arms. Move your feet further from the wall to make it harder, closer to make it easier."},
@@ -1441,7 +1454,7 @@ const GATES={
  plyo:{label:'Low plyometrics', reqs:[['pogo',20]],
    note:'Small, springy, repeatable ankle work before anything with height.'},
  land1:{label:'One-foot landing control', reqs:[['lat_bound',6]],
-   note:'Landing on one leg and stopping dead, without the knee travelling inward.'},
+   note:'Landing on one leg and stopping dead, without the knee traveling inward.'},
  lathip:{label:'Lateral hip control', reqs:[['clamshell',15],['hip_abd_side',12],['hip_abd_stand',12]],
    note:'Sideways loading — shuffling, edging, traversing — all runs through the side of the hip.'},
  scap:{label:'Scapular control', reqs:[['scap_set',8],['scap_pushup',12]],
@@ -1579,7 +1592,7 @@ const HOWTO3={
 split_step_drill:{setup:["Stand in a clear space with feet under your hips.","Knees soft, weight on the balls of your feet.","Hands up in front of you."],
  action:"Hop very slightly and land in a wide, low ready position. From there take one quick step sideways and stop dead. Reset and repeat, alternating sides.",
  feel:"Ankles and hips absorbing the landing and then producing the step. The stop is the hard part — if you are drifting past where you meant to stop, slow the step down."},
-approach_foot:{setup:["Find about four metres of clear floor.","Start standing tall, hands at your sides.","No ball, no net, no jump."],
+approach_foot:{setup:["Find about four meters of clear floor.","Start standing tall, hands at your sides.","No ball, no net, no jump."],
  action:"Walk the approach at half speed — left, right, left for a right-handed hitter — swinging both arms back on the last two steps. Finish in the loaded position with both feet planted and knees bent. Stop there.",
  feel:"The rhythm more than the effort. This is a pattern you are grooving so that when the jump gets added, your feet already know where to go."},
 drop_land:{setup:["Stand on a low box, four to six inches to start.","Feet hip width, toes over the edge.","Clear space in front of you."],
@@ -1599,7 +1612,7 @@ approach_jump:{setup:["Clear space with room for a three-step run.","Warm up wit
  feel:"Everything working together. Keep the sets short — four reps, four rounds. The moment the landings stop being quiet, you are done for the day."},
 platform_iso:{setup:["Stand in the passing ready position, knees bent.","Put your forearms together to form the platform, thumbs alongside each other.","Elbows straight but not locked."],
  action:"Hold the platform steady in front of you for fifteen seconds, keeping the shoulders set.",
- feel:"Shoulders and the front of the forearms holding position. This is the exercise that matters most for a hypermobile elbow — straight means straight, and never a millimetre past."},
+ feel:"Shoulders and the front of the forearms holding position. This is the exercise that matters most for a hypermobile elbow — straight means straight, and never a millimeter past."},
 band_swing:{setup:["Anchor a light band behind you at shoulder height.","Hold the end in your hitting hand.","Stand tall with the ribs down."],
  action:"Take the arm slowly through the swing path against the band — three counts back, three counts forward — stopping short of the extreme at both ends.",
  feel:"The back of the shoulder controlling the whole path. Slowness is the point. The extreme of the cocked-back position is exactly where a hypermobile shoulder is least stable, so you stop before it."},
@@ -1623,15 +1636,15 @@ const EX4=[
  chain:'open',contraction:'isometric',rom:'mid_range',position:'standing',joints:['shoulder','elbow'],
  proprio:3,balance:0,wristExt:'none',cervical:'none',trunk:'low',impact:'none',autonomic:'low',
  equip:['band'],spaces:['home','gym'],mods:[],tempo:'hold 10s',dose:'4 x 6 holds',requires:['scap'],
- cueDo:'Arm out to the side at shoulder height, elbow bent to a right angle, forearm pointing up. Press back against a band and hold without the arm travelling.',
+ cueDo:'Arm out to the side at shoulder height, elbow bent to a right angle, forearm pointing up. Press back against a band and hold without the arm traveling.',
  cueAvoid:'Do not let the arm rotate further back than the start position. This builds force at the angle, not more range.',tier:1},
 {id:'ir_iso_9090',name:'Isometric internal rotation at 90/90',region:'shoulder_elbow',phase:2,
  chain:'open',contraction:'isometric',rom:'mid_range',position:'standing',joints:['shoulder','elbow'],
  proprio:3,balance:0,wristExt:'none',cervical:'none',trunk:'low',impact:'none',autonomic:'low',
  equip:['band'],spaces:['home','gym'],mods:[],tempo:'hold 10s',dose:'4 x 6 holds',requires:['scap'],
- cueDo:'Same 90/90 position. Press the forearm forward against a band anchored behind you, and hold without the arm travelling.',
+ cueDo:'Same 90/90 position. Press the forearm forward against a band anchored behind you, and hold without the arm traveling.',
  cueAvoid:'Keep the elbow at shoulder height. If it drops, the set is over.',tier:1},
-{id:'rhythmic_9090',name:'Rhythmic stabilisation at 90/90',region:'shoulder_elbow',phase:2,
+{id:'rhythmic_9090',name:'Rhythmic stabilization at 90/90',region:'shoulder_elbow',phase:2,
  chain:'open',contraction:'isometric',rom:'mid_range',position:'standing',joints:['shoulder','elbow'],
  proprio:3,balance:0,wristExt:'none',cervical:'none',trunk:'low',impact:'none',autonomic:'low',
  equip:['band'],spaces:['home','gym'],mods:[],tempo:'hold 20s',dose:'3 x 20s',requires:['scap'],
@@ -1654,7 +1667,7 @@ const EX4=[
  proprio:3,balance:0,wristExt:'low',cervical:'none',trunk:'low',impact:'none',autonomic:'med',
  equip:['ball'],spaces:['home','gym'],mods:[],tempo:'continuous',dose:'3 x 30s',requires:['scap'],
  cueDo:'Arm up at 90/90 against a wall, dribble a small ball against the wall fast for thirty seconds. The arm stays exactly where it is.',
- cueAvoid:'If the elbow drops or the shoulder shrugs, stop. This is endurance for the stabilisers, not the arm.',tier:1},
+ cueAvoid:'If the elbow drops or the shoulder shrugs, stop. This is endurance for the stabilizers, not the arm.',tier:1},
 {id:'half_kneel_throw',name:'Half-kneeling overhead throw',region:'shoulder_elbow',phase:3,sport_of:'volleyball',
  chain:'open',contraction:'concentric',rom:'mid_range',position:'standing',joints:['shoulder','elbow','wrist'],
  proprio:2,balance:1,wristExt:'none',cervical:'low',trunk:'high',impact:'none',autonomic:'med',
@@ -1674,8 +1687,8 @@ er_iso_9090:{setup:["Anchor a band at about shoulder height in front of you.","R
  action:"Press back against the band and hold ten seconds. The arm does not travel at all. Six holds.",
  feel:"The back of the shoulder working hard in a position that probably feels vulnerable. That is exactly why it is the position worth training. Stop if the shoulder starts to feel like it is shifting rather than working."},
 ir_iso_9090:{setup:["Anchor a band at shoulder height behind you.","Same 90/90 position — arm out to the side at shoulder height, elbow bent to a right angle.","Hold the band so it tries to pull your forearm backward."],
- action:"Press the forearm forward against the band and hold ten seconds without the arm travelling. Six holds.",
- feel:"The front of the shoulder and the lat. This is the direction that accelerates a swing, held still so you can build force without the joint travelling."},
+ action:"Press the forearm forward against the band and hold ten seconds without the arm traveling. Six holds.",
+ feel:"The front of the shoulder and the lat. This is the direction that accelerates a swing, held still so you can build force without the joint traveling."},
 rhythmic_9090:{setup:["Hold the 90/90 position with a light band in your hand.","Anchor the other end, or have someone hold it.","Ribs down, shoulder blade set."],
  action:"Let the band tug at you with small, quick, unpredictable pulls from different directions for twenty seconds. Your only job is that nothing moves.",
  feel:"Constant fast corrections around the joint. This trains the shoulder to co-contract before it gets loaded, which is the thing a hypermobile joint is usually slowest at."},
@@ -1769,7 +1782,7 @@ const FIGS6={lateral_shuffle:['ready','shuffle'],ready_hold:['stand','ready'],re
  loaded_stepdown:['box_step_top','box_step_down'],uneven_stance:['stand','uneven'],
  pack_carry:['stand','carry'],aero_hold:['seated','aero']};
 const HOWTO6={
-lateral_shuffle:{setup:["Clear about three metres of floor.","Drop into a low ready position — knees bent, weight forward.","Hands up in front of you."],
+lateral_shuffle:{setup:["Clear about three meters of floor.","Drop into a low ready position — knees bent, weight forward.","Hands up in front of you."],
  action:"Shuffle sideways without letting your feet cross, staying low the whole way, then shuffle back. Twenty seconds.",
  feel:"The outside of both hips burning. Standing up between shuffles is the usual cheat — if you find yourself rising, shorten the interval."},
 ready_hold:{setup:["Stand with feet slightly wider than your hips.","Bend the knees to about a right angle, weight forward on the balls of the feet.","Hold your paddle or just your hands up in front."],
@@ -1852,7 +1865,7 @@ const FIGS7={a_skip:['ready','a_skip'],sl_hop:['one_leg','hop_land'],downhill_co
  single_leg_pedal:['seated','pedal'],standing_climb:['stand','climb_stand'],
  catch_iso:['arm_9090','catch_iso'],streamline_hold:['wall_stand','streamline']};
 const HOWTO7={
-a_skip:{setup:["Find twenty metres of clear flat ground.","Stand tall, arms relaxed at your sides.","Warm up first — this is not a first-exercise drill."],
+a_skip:{setup:["Find twenty meters of clear flat ground.","Stand tall, arms relaxed at your sides.","Warm up first — this is not a first-exercise drill."],
  action:"Skip forward, driving one knee up toward hip height while the opposite foot stays springy underneath you. Land on the ball of the foot. Twenty steps.",
  feel:"Bouncy and rhythmic. If you are thudding rather than springing, slow the cadence — the point is elastic quality, not knee height."},
 sl_hop:{setup:["Clear flat ground with room to hop forward.","Stand on one leg, knee soft.","Pick a landing spot you are confident about."],
@@ -2036,171 +2049,171 @@ volleyball:[
  {id:'swing_power',label:'Arm swing power',
   chain:['Legs drive up off the floor','Hips rotate','Trunk rotates behind the hips, storing energy','Shoulder blade holds the arm on a stable base','Shoulder rotates internally','Elbow extends','Wrist snaps'],
   produces:['Lat','Pec major','Internal rotators of the shoulder','Obliques and trunk rotators'],
-  stabilise:['Serratus anterior','Lower trapezius','Rotator cuff','Deep trunk'],
+  stabilize:['Serratus anterior','Lower trapezius','Rotator cuff','Deep trunk'],
   note:'Swing speed is built mostly in the links below the arm. The arm is the last and smallest one, which is why hitters with no visible arm muscle can swing hard — they sequence well and lose nothing between the floor and the hand. If a link is loose, energy dissipates there instead of passing through, and the arm ends up trying to generate on its own what it was supposed to receive.',
   ex:['scap_set','scap_pushup','er_iso_9090','ir_iso_9090','short_ir_band','straight_arm_pull','sep_drill','band_rotation','band_swing','mb_rot_throw','swing_speed']},
  {id:'jump',label:'Jump height',
   chain:['Ankles produce stiffness','Knees and hips extend','Trunk stays rigid so nothing leaks','Arms swing up to add lift'],
   produces:['Glutes','Quadriceps','Calves'],
-  stabilise:['Foot arch','Ankle stabilisers','Deep trunk'],
+  stabilize:['Foot arch','Ankle stabilizers','Deep trunk'],
   note:'A jump is a stiffness problem before it is a strength problem. If the foot and ankle collapse on the way down, the energy you could have returned goes into the floor instead.',
   ex:['short_foot','calf_stand','loaded_calf','wall_sit','chair_squat','goblet_squat','step_up','split_squat','drop_land','pogo','cmj_stick']},
  {id:'quick',label:'Quickness and change of direction',
   chain:['Split step loads the ankles','Hip pushes you sideways','Opposite leg catches and stops you'],
   produces:['Glute medius','Adductors','Calves'],
-  stabilise:['Ankle stabilisers','Foot arch','Lateral hip'],
+  stabilize:['Ankle stabilizers','Foot arch','Lateral hip'],
   note:'Stopping is the hard half. Most direction changes fail on the catch, not the push.',
   ex:['sls','tandem_stance','clamshell','hip_abd_side','hip_abd_stand','sl_reach','split_step_drill','lat_bound']},
  {id:'landing',label:'Landing safely',
   chain:['Ankle absorbs first','Knee tracks over the foot','Hip takes the rest','Trunk stays quiet'],
   produces:['Glutes','Quadriceps eccentrically'],
-  stabilise:['Foot arch','Lateral hip','Deep trunk'],
+  stabilize:['Foot arch','Lateral hip','Deep trunk'],
   note:'The most valuable thing on this list for a hypermobile player, and the one that decides whether the rest is worth building.',
   ex:['short_foot','sls','step_down','split_squat','clamshell','drop_land','lat_bound']},
  {id:'block',label:'Blocking and overhead position',
   chain:['Shoulder blade rotates upward','Shoulder holds the overhead position','Trunk resists arching'],
   produces:['Serratus anterior','Lower trapezius','Deltoid'],
-  stabilise:['Rotator cuff','Deep trunk'],
+  stabilize:['Rotator cuff','Deep trunk'],
   note:'Getting overhead without shrugging or arching is a scapular job. The arm cannot hold a position the blade will not support.',
   ex:['scap_set','serratus','scap_pushup','wall_slide','band_pulldown','block_hold']},
  {id:'platform',label:'Passing and platform',
   chain:['Legs set the height','Trunk stays still','Elbows hold straight without locking'],
-  produces:['Legs','Scapular stabilisers'],
-  stabilise:['Elbow stabilisers','Rotator cuff','Forearm'],
+  produces:['Legs','Scapular stabilizers'],
+  stabilize:['Elbow stabilizers','Rotator cuff','Forearm'],
   note:'The elbow one matters more for you than for most players. A hypermobile elbow that snaps past straight on contact takes the load through the joint rather than the muscle.',
   ex:['elbow_iso','band_pullapart','scap_set','wrist_iso','platform_iso']},
  {id:'endurance',label:'Holding up late in a match',
-  chain:['Stabilisers fatigue first','Position degrades','Passive tissue starts taking load'],
+  chain:['Stabilizers fatigue first','Position degrades','Passive tissue starts taking load'],
   produces:[],
-  stabilise:['Rotator cuff','Serratus anterior','Foot arch','Lateral hip'],
-  note:'Stabilisers fatigue far faster than the big muscles. When they drop out, a hypermobile joint has nothing left holding it but ligament — which is why the last set of a match is where things go wrong.',
+  stabilize:['Rotator cuff','Serratus anterior','Foot arch','Lateral hip'],
+  note:'Stabilizers fatigue far faster than the big muscles. When they drop out, a hypermobile joint has nothing left holding it but ligament — which is why the last set of a match is where things go wrong.',
   ex:['wall_dribble','scap_set','er_iso','short_foot','sls','clamshell','grip_hold']}],
 running:[
  {id:'r_absorb',label:'Absorbing each step',chain:['Foot lands','Arch loads','Knee and hip absorb'],
-  produces:['Glutes','Calves','Quadriceps'],stabilise:['Foot arch','Lateral hip','Ankle stabilisers'],
+  produces:['Glutes','Calves','Quadriceps'],stabilize:['Foot arch','Lateral hip','Ankle stabilizers'],
   note:'Running is thousands of small landings. A loose foot repeated ten thousand times is a bigger problem than one hard landing.',
   ex:['short_foot','toe_spread','calf_stand','sls','clamshell','hip_abd_side','step_down']},
  {id:'r_push',label:'Push-off power',chain:['Hip extends','Knee extends','Ankle pushes last'],
-  produces:['Glutes','Hamstrings','Calves'],stabilise:['Deep trunk','Foot arch'],
+  produces:['Glutes','Hamstrings','Calves'],stabilize:['Deep trunk','Foot arch'],
   note:'Most of the propulsion is hip, not calf, though the calf is what usually gets sore.',
   ex:['glute_bridge','hip_thrust','hip_hinge','loaded_calf','split_squat','step_up']},
  {id:'r_pelvis',label:'Keeping the pelvis level',chain:['Stance hip holds the pelvis','Trunk stays quiet'],
-  produces:['Glute medius'],stabilise:['Lateral hip','Deep trunk'],
+  produces:['Glute medius'],stabilize:['Lateral hip','Deep trunk'],
   note:'A hip that drops each step sends the load into the knee and the low back instead.',
   ex:['clamshell','hip_abd_side','hip_abd_stand','sls','sl_reach','step_down']},
  {id:'r_ankle',label:'Ankle and foot durability',chain:['Arch holds','Ankle resists rolling'],
-  produces:['Calves','Foot intrinsics'],stabilise:['Foot arch','Ankle stabilisers'],
+  produces:['Calves','Foot intrinsics'],stabilize:['Foot arch','Ankle stabilizers'],
   note:'Hypermobile ankles roll more easily and recover more slowly. Small, frequent work beats occasional hard work.',
   ex:['short_foot','toe_spread','ankle_evert','ankle_invert','ankle_dorsi','tandem_stance','heel_toe_walk']}],
 swimming:[
  {id:'s_catch',label:'The catch and pull',chain:['Shoulder blade sets','Lat pulls','Trunk stays long'],
-  produces:['Lat','Pec major','Internal rotators'],stabilise:['Serratus anterior','Lower trapezius','Rotator cuff'],
+  produces:['Lat','Pec major','Internal rotators'],stabilize:['Serratus anterior','Lower trapezius','Rotator cuff'],
   note:'The pull is a lat job with a scapular prerequisite. Without the blade set, the shoulder does the pulling and pays for it.',
   ex:['scap_set','scap_pushup','serratus','band_row','band_pulldown','straight_arm_pull']},
  {id:'s_recover',label:'Overhead recovery',chain:['Blade rotates up','Shoulder clears overhead'],
-  produces:['Deltoid','Serratus anterior'],stabilise:['Rotator cuff','Lower trapezius'],
+  produces:['Deltoid','Serratus anterior'],stabilize:['Rotator cuff','Lower trapezius'],
   note:'Getting overhead thousands of times per session is where a lax shoulder accumulates trouble.',
   ex:['wall_slide','serratus','er_iso','er_iso_9090','band_pullapart']},
  {id:'s_shoulder',label:'Shoulder durability',
-  chain:['Cuff holds the head of the humerus centred','Blade keeps its position stroke after stroke','Load stays in muscle rather than passing into the joint'],
-  produces:[],stabilise:['Rotator cuff','Serratus anterior','Lower trapezius'],
+  chain:['Cuff holds the head of the humerus centered','Blade keeps its position stroke after stroke','Load stays in muscle rather than passing into the joint'],
+  produces:[],stabilize:['Rotator cuff','Serratus anterior','Lower trapezius'],
   note:'Volume is the risk in swimming, not intensity. Endurance of the small muscles is the thing to build.',
   ex:['er_iso','er_iso_9090','rhythmic_9090','wall_dribble','scap_set']},
  {id:'s_trunk',label:'Body position and roll',chain:['Trunk stays long','Hips roll with the stroke'],
-  produces:['Obliques','Glutes'],stabilise:['Deep trunk'],
+  produces:['Obliques','Glutes'],stabilize:['Deep trunk'],
   note:'A trunk that folds costs more speed than a weak pull does.',
   ex:['glute_bridge','ham_iso','sep_drill','band_rotation','dead_bug']}],
 cycling:[
  {id:'c_neck',label:'Neck and shoulders on long rides',
   chain:['Deep neck muscles hold the head up','Upper back holds the shoulder blades','Arms only support, they do not brace'],
-  produces:['Deep neck flexors','Lower trapezius'],stabilise:['Deep neck flexors','Serratus anterior','Scapular stabilisers'],
+  produces:['Deep neck flexors','Lower trapezius'],stabilize:['Deep neck flexors','Serratus anterior','Scapular stabilizers'],
   note:'The head weighs about as much as a bowling ball and you hold it up for hours in a position that gives it no help. With a hypermobile neck this is usually the first thing to complain on a long ride, and it responds well to endurance work rather than stretching.',
   ex:['chin_tuck','neck_iso','neck_rot_iso','scap_set','serratus','wall_slide','aero_hold']},
  {id:'c_power',label:'Sustained pedalling power',chain:['Hip extends','Knee extends','Ankle stays quiet'],
-  produces:['Glutes','Quadriceps'],stabilise:['Deep trunk','Lateral hip'],
+  produces:['Glutes','Quadriceps'],stabilize:['Deep trunk','Lateral hip'],
   note:'Cycling is one plane, repeated. Everything it does not train — sideways hip control especially — is what you have to add on purpose.',
   ex:['glute_bridge','hip_thrust','chair_squat','goblet_squat','ham_iso','clamshell','hip_abd_side']},
  {id:'c_saddle',label:'Staying stable in the saddle',chain:['Pelvis stays level','Trunk stays quiet','Legs work underneath'],
-  produces:['Glute medius'],stabilise:['Deep trunk','Lateral hip'],
+  produces:['Glute medius'],stabilize:['Deep trunk','Lateral hip'],
   note:'Rocking in the saddle wastes power and loads the low back. It is usually a lateral hip endurance problem.',
   ex:['clamshell','hip_abd_side','ham_iso','glute_bridge','sep_drill','band_rotation']}],
 pickleball:[
  {id:'p_cover',label:'Court coverage and first step',
   chain:['Split step loads the ankles','Hip pushes you out','Far leg catches and stops you'],
-  produces:['Glute medius','Adductors','Quadriceps'],stabilise:['Ankle stabilisers','Lateral hip','Foot arch'],
+  produces:['Glute medius','Adductors','Quadriceps'],stabilize:['Ankle stabilizers','Lateral hip','Foot arch'],
   note:'Almost everything in pickleball is a short lateral burst followed by a stop. The stop is where hypermobile knees and ankles get caught out, so build the catching before the pushing.',
   ex:['sls','tandem_stance','clamshell','hip_abd_side','hip_abd_stand','ready_hold','lateral_shuffle','split_step_drill','reach_lunge']},
  {id:'p_lowpos',label:'Staying low through a rally',
   chain:['Knees and hips hold a bent position','Trunk stays upright','Weight stays forward'],
-  produces:['Quadriceps','Glutes'],stabilise:['Deep trunk','Foot arch'],
+  produces:['Quadriceps','Glutes'],stabilize:['Deep trunk','Foot arch'],
   note:'Standing up between shots is the most common fault and it is an endurance problem, not a technique one.',
   ex:['ready_hold','wall_sit','iso_squat','chair_squat','split_squat','step_down']},
  {id:'p_paddle',label:'Paddle arm and wrist',
   chain:['Blade sets','Shoulder holds position','Elbow stays out of the end range','Wrist controls the face'],
-  produces:['Forearm','Shoulder rotators'],stabilise:['Rotator cuff','Elbow stabilisers','Wrist stabilisers'],
+  produces:['Forearm','Shoulder rotators'],stabilize:['Rotator cuff','Elbow stabilizers','Wrist stabilizers'],
   note:'Dinking is hundreds of small controlled contacts. For a hypermobile wrist and elbow the risk is volume at end range rather than any single hard shot.',
   ex:['wrist_iso','wrist_ext_iso','forearm_rot','grip_hold','elbow_iso','band_pullapart','scap_set','platform_iso']},
  {id:'p_over',label:'Overheads and serving',chain:['Trunk rotates','Blade rotates up','Shoulder rotates','Elbow extends'],
-  produces:['Lat','Internal rotators'],stabilise:['Rotator cuff','Serratus anterior'],
+  produces:['Lat','Internal rotators'],stabilize:['Rotator cuff','Serratus anterior'],
   note:'Lower volume than volleyball but the same shoulder demands, so it borrows the same preparation.',
   ex:['scap_set','scap_pushup','er_iso_9090','ir_iso_9090','band_pulldown','straight_arm_pull','wall_slide']}],
 skiing:[
  {id:'k_descent',label:'Holding a bent position all the way down',
   chain:['Quads hold the knee angle','Glutes hold the hip angle','Trunk stays quiet'],
-  produces:['Quadriceps','Glutes'],stabilise:['Lateral hip','Foot arch','Deep trunk'],
+  produces:['Quadriceps','Glutes'],stabilize:['Lateral hip','Foot arch','Deep trunk'],
   note:'Skiing is a long isometric with interruptions. Legs give out from endurance rather than from any single hard effort, and once they do, a hypermobile knee is holding itself on ligament.',
   ex:['wall_sit','iso_squat','chair_squat','goblet_squat','ready_hold','split_squat','step_down','edge_iso']},
  {id:'k_edge',label:'Edge control and lateral load',
   chain:['Ankle sets the edge','Knee stays over the foot','Hip carries the load sideways'],
-  produces:['Glute medius','Adductors'],stabilise:['Lateral hip','Ankle stabilisers'],
+  produces:['Glute medius','Adductors'],stabilize:['Lateral hip','Ankle stabilizers'],
   note:'Every turn is a sideways load held against gravity. This is the direction general training almost always skips.',
   ex:['clamshell','hip_abd_side','hip_abd_stand','edge_iso','skater_hold','lat_stepdown','lateral_shuffle']},
  {id:'k_absorb',label:'Absorbing terrain',chain:['Ankle absorbs first','Knee and hip follow','Trunk stays level'],
-  produces:['Quadriceps eccentrically','Glutes'],stabilise:['Foot arch','Deep trunk','Lateral hip'],
+  produces:['Quadriceps eccentrically','Glutes'],stabilize:['Foot arch','Deep trunk','Lateral hip'],
   note:'Bumps arrive faster than you can consciously react, so this has to be reflexive. That is position-sense work, not strength work.',
   ex:['short_foot','sls','uneven_stance','tandem_stance','step_down','lat_stepdown','drop_land','knee_position']},
- {id:'k_endure',label:'Lasting a full day',chain:['Stabilisers fatigue','Position degrades','Joints take load muscle should'],
-  produces:[],stabilise:['Foot arch','Lateral hip','Deep trunk','Ankle stabilisers'],
-  note:'Most ski injuries happen late in the day. For a hypermobile skier the last run is the risky one, and the fix is stabiliser endurance built beforehand.',
+ {id:'k_endure',label:'Lasting a full day',chain:['Stabilizers fatigue','Position degrades','Joints take load muscle should'],
+  produces:[],stabilize:['Foot arch','Lateral hip','Deep trunk','Ankle stabilizers'],
+  note:'Most ski injuries happen late in the day. For a hypermobile skier the last run is the risky one, and the fix is stabilizer endurance built beforehand.',
   ex:['wall_sit','ready_hold','short_foot','clamshell','sls','edge_iso','tandem_stance']}],
 hiking:[
  {id:'h_descent',label:'Going downhill',
   chain:['Quads control the knee','Glutes control the hip','Ankle absorbs the contact'],
-  produces:['Quadriceps eccentrically','Glutes'],stabilise:['Lateral hip','Foot arch'],
+  produces:['Quadriceps eccentrically','Glutes'],stabilize:['Lateral hip','Foot arch'],
   note:'Descending is where hypermobile knees suffer, and it is almost entirely an eccentric problem. Thousands of controlled lowerings under pack weight, which is exactly what a loaded step-down rehearses.',
   ex:['step_down','split_squat','lat_stepdown','loaded_stepdown','clamshell','hip_abd_side','wall_sit']},
  {id:'h_footing',label:'Footing on uneven trail',
   chain:['Foot reads the ground','Arch holds shape','Ankle resists rolling'],
-  produces:['Calves','Foot intrinsics'],stabilise:['Foot arch','Ankle stabilisers'],
-  note:'Roots and rock are what actually roll ankles, and a flat gym floor never rehearses it. Practise on something uneven on purpose.',
+  produces:['Calves','Foot intrinsics'],stabilize:['Foot arch','Ankle stabilizers'],
+  note:'Roots and rock are what actually roll ankles, and a flat gym floor never rehearses it. Practice on something uneven on purpose.',
   ex:['short_foot','toe_spread','ankle_evert','ankle_invert','ankle_dorsi','sls','tandem_stance','uneven_stance','heel_toe_walk']},
  {id:'h_climb',label:'Going uphill',chain:['Hip drives','Knee extends','Calf pushes off last'],
-  produces:['Glutes','Quadriceps','Calves'],stabilise:['Deep trunk','Lateral hip'],
+  produces:['Glutes','Quadriceps','Calves'],stabilize:['Deep trunk','Lateral hip'],
   note:'Uphill is the part that feels hard and the part that causes least trouble. Train it, but not at the expense of the descent.',
   ex:['step_up','split_squat','hip_thrust','glute_bridge','hip_hinge','calf_stand','loaded_calf']},
  {id:'h_pack',label:'Carrying a pack',chain:['Trunk holds posture','Shoulders carry the straps','Hips take the belt load'],
-  produces:['Glutes','Trunk'],stabilise:['Deep trunk','Scapular stabilisers','Lateral hip'],
+  produces:['Glutes','Trunk'],stabilize:['Deep trunk','Scapular stabilizers','Lateral hip'],
   note:'A pack changes how your spine is loaded for hours at a time. Worth building deliberately rather than discovering on the trail.',
   ex:['scap_set','serratus','farmer_carry','pack_carry','glute_bridge','ham_iso','hip_abd_side']}],
 triathlon:[
  {id:'t_neck',label:'Neck and upper back on the bike',
   chain:['Deep neck muscles hold the head','Upper back holds the blades','Arms support without bracing'],
-  produces:['Deep neck flexors','Lower trapezius'],stabilise:['Deep neck flexors','Serratus anterior'],
+  produces:['Deep neck flexors','Lower trapezius'],stabilize:['Deep neck flexors','Serratus anterior'],
   note:'The longest sustained position in the whole race, and the one a hypermobile neck likes least. It is an endurance problem and it trains well off the bike.',
   ex:['chin_tuck','neck_iso','neck_rot_iso','scap_set','serratus','aero_hold','wall_slide']},
  {id:'t_shoulder',label:'Shoulder durability across the swim',
-  chain:['Blade sets','Lat pulls','Cuff keeps the joint centred'],
-  produces:['Lat','Internal rotators'],stabilise:['Rotator cuff','Serratus anterior','Lower trapezius'],
+  chain:['Blade sets','Lat pulls','Cuff keeps the joint centered'],
+  produces:['Lat','Internal rotators'],stabilize:['Rotator cuff','Serratus anterior','Lower trapezius'],
   note:'Swim volume is the shoulder risk in triathlon, not swim intensity. Small-muscle endurance is what holds up.',
   ex:['scap_set','scap_pushup','serratus','er_iso','er_iso_9090','rhythmic_9090','band_row','band_pulldown','straight_arm_pull']},
  {id:'t_run',label:'Running off the bike',
   chain:['Hips take over from a seated position','Foot absorbs','Pelvis stays level'],
-  produces:['Glutes','Calves'],stabilise:['Lateral hip','Foot arch','Deep trunk'],
+  produces:['Glutes','Calves'],stabilize:['Lateral hip','Foot arch','Deep trunk'],
   note:'The transition asks the hips to switch jobs while already tired, and tired plus hypermobile is when form goes. Lateral hip endurance protects this more than run volume does.',
   ex:['clamshell','hip_abd_side','hip_abd_stand','sls','step_down','split_squat','glute_bridge','sl_reach','calf_stand']},
  {id:'t_volume',label:'Absorbing the training volume',
-  chain:['Stabilisers hold across hours','Joints stay in mid range','Recovery keeps up'],
-  produces:[],stabilise:['Foot arch','Lateral hip','Rotator cuff','Deep trunk'],
+  chain:['Stabilizers hold across hours','Joints stay in mid range','Recovery keeps up'],
+  produces:[],stabilize:['Foot arch','Lateral hip','Rotator cuff','Deep trunk'],
   note:'Three sports means three times the chances to accumulate load a hypermobile joint has not been prepared for. This is the area worth keeping selected all year.',
   ex:['short_foot','sls','tandem_stance','clamshell','scap_set','er_iso','ham_iso','uneven_stance','knee_position']}]
 };
@@ -2527,7 +2540,7 @@ const READY_Q=[
 ];
 function readinessToday(){ return (S.readiness||[]).find(r=>r.date===today())||null; }
 /* 0-1 full, 2 reduced, 3+ restorative. Three mild negatives at once —
-   low energy, grumbly joints, bad sleep — is a recognisable pre-flare
+   low energy, grumbly joints, bad sleep — is a recognizable pre-flare
    day, so the default errs toward the gentler option. You can always
    override upward. */
 function scoreToMode(sc){ return sc>=3?'restorative':sc>=2?'reduced':'full'; }
@@ -2574,11 +2587,11 @@ const COMPS=[
 {id:'neck_traps', label:'Neck and upper traps take over during arm work',
  regions:['shoulder_elbow','neck','wrist_hand'],
  means:'The upper trapezius sits close to the surface and fires early, so when the deeper scapular muscles are slow — which they usually are with hypermobility — it steps in. If the neck is also unstable, the body has a second reason to hold on there: bracing through the neck is how it borrows stability it does not otherwise have.',
- strategy:['Support the arm or the trunk so there is less to stabilise — seated with your back on a wall, or lying down.',
+ strategy:['Support the arm or the trunk so there is less to stabilize — seated with your back on a wall, or lying down.',
    'Start below shoulder height. Traps recruit hardest overhead.',
    'Drop the load until you can do it without the shoulders rising. Load is not the point yet.',
    'Set the shoulder blade down and back before the arm does anything, and breathe out on the effort.',
-   'Isometric holds first. There is less to hijack when nothing is travelling.'],
+   'Isometric holds first. There is less to hijack when nothing is traveling.'],
  cue:'Before each rep: shoulders down away from your ears, chin gently back, breathe out as you work. If your shoulders rise, the set is over.',
  prefer:['scap_set','serratus','scap_pushup','er_iso','er_iso_9090','ir_iso_9090','rhythmic_9090',
    'band_row','straight_arm_pull','chin_tuck','neck_iso','neck_rot_iso','wall_dribble'],
@@ -2586,8 +2599,8 @@ const COMPS=[
 
 {id:'glute_brace', label:'Glutes will not fire because they are bracing the back and hips',
  regions:['knee_hip','trunk'],
- means:'A muscle doing a holding job cannot also do a moving job. If your glutes are working full time to stabilise the pelvis and lumbar spine, there is nothing left for hip extension, and it reads as the glutes not switching on. It is usually not weakness — it is a muscle already fully employed.',
- strategy:['Take the stabilising job away first: positions where the floor or a wall supports the spine, so the glute is free to work.',
+ means:'A muscle doing a holding job cannot also do a moving job. If your glutes are working full time to stabilize the pelvis and lumbar spine, there is nothing left for hip extension, and it reads as the glutes not switching on. It is usually not weakness — it is a muscle already fully employed.',
+ strategy:['Take the stabilizing job away first: positions where the floor or a wall supports the spine, so the glute is free to work.',
    'Short range before long range. Small hip extension from a supported position.',
    'Isometric holds so you can find the contraction before adding travel.',
    'Exhale fully before the effort. Bracing and breath-holding tend to travel together.',
@@ -2683,15 +2696,15 @@ const ISSUES=[
       foot_ankle:['short_foot','ankle_evert','ankle_dorsi'],
       _:['wrist_iso','elbow_iso']}},
 {id:'unstable', label:'It feels like the joint might give way',
- means:'A sense of the joint shifting is worth taking seriously and worth telling your clinician about, even without pain. It usually means the load is arriving faster than the stabilisers can respond.',
- does:'Steps this exercise back, adds a boundary or support modification, and prioritises slow co-contraction work at the position.',
+ means:'A sense of the joint shifting is worth taking seriously and worth telling your clinician about, even without pain. It usually means the load is arriving faster than the stabilizers can respond.',
+ does:'Steps this exercise back, adds a boundary or support modification, and prioritizes slow co-contraction work at the position.',
  add:{shoulder_elbow:['rhythmic_9090','scap_set','er_iso','serratus'],
       knee_hip:['wall_sit','tke','clamshell','ham_iso'],
       foot_ankle:['short_foot','sls','ankle_evert'],
       _:['wrist_iso','neck_iso']}, flag:true},
 {id:'fade', label:'Fine for a few reps, then nothing',
- means:'Stabilisers fatigue much faster than prime movers, and once they drop out the joint starts relying on passive tissue for position. That is when the reps get sloppy and the next-day symptoms show up.',
- does:'Shortens sets and raises frequency instead of volume, and adds endurance work for the stabilisers.',
+ means:'Stabilizers fatigue much faster than prime movers, and once they drop out the joint starts relying on passive tissue for position. That is when the reps get sloppy and the next-day symptoms show up.',
+ does:'Shortens sets and raises frequency instead of volume, and adds endurance work for the stabilizers.',
  add:{shoulder_elbow:['scap_set','wall_dribble','er_iso','block_hold'],
       knee_hip:['iso_squat','clamshell','hip_abd_side'],
       foot_ankle:['short_foot','sls','tandem_stance'],
@@ -2732,6 +2745,40 @@ function openIssues(){
   const seen={};
   (S.issues||[]).forEach(i=>{ seen[i.exId+'|'+i.issueId]=i; });
   return Object.values(seen).sort((a,b)=>b.date.localeCompare(a.date));
+}
+
+/* ============================================================
+   WHY THE ORDER
+   The arc the whole app is built on. It appears at first run and
+   stays reachable, because the gating only makes sense if you
+   know what it is protecting.
+   ============================================================ */
+const WHY={
+ headline:'Build stabilizer muscles first, then strength. Together they give you control and function now and as you age.',
+ short:'A hypermobile joint has more range than its ligaments can control on their own. Muscle is the part of that control you can build, so the order is stabilizers first, then strength.',
+ steps:[
+  {n:'Stage 1', t:'Stabilize your joints',
+   b:'Help your muscles and ligaments work together. Ligaments in a hypermobile joint are longer and more elastic than they need to be, so they cannot govern the joint on their own. The muscles around it have to take on part of that job. Before a joint is loaded, those muscles need to be able to hold it in position, and you need to be able to sense where the joint is, which is harder when position sense is reduced.'},
+  {n:'Stage 2', t:'Build stabilizer muscles',
+   b:'These are the small muscles that hold a joint centered. They fatigue quickly. When they tire, two things follow: the joint drifts past its normal range, and the larger muscle groups start bracing to make up for it, which is why the glutes or the traps end up doing a holding job instead of their own. Building endurance in the stabilizers is what keeps a joint inside its normal range through a full session, a full match, or a full day.'},
+  {n:'Stage 3', t:'Strengthen the larger muscles',
+   b:'Once a joint is held, load stops being risky and starts being useful. Strength is what gives you control and function day to day — carrying a pack, holding a position, absorbing a landing. This is the goal of the app rather than a bonus stage, which is why it keeps directing you toward it instead of leaving you on gentle work indefinitely.'},
+  {n:'Why it lasts', t:'Control and function, now and as you age',
+   b:'Muscle keeps a joint from traveling past its normal range. That is what protects cartilage from wearing down, what makes subluxations and dislocations less likely, and what reduces joint pain. Those are not benefits that arrive later — they apply from the first month. They also compound, because every year a joint spends inside its normal range is a year of wear that does not accumulate.'}],
+ caveat:'The research in hypermobility is thinner than anyone would like, but the direction of the guidance is consistent: strengthening and neuromuscular control are the main things you can change. Your clinician knows your case; this is the reasoning behind the order the app puts things in.'
+};
+function whySheet(){
+  openSheet('Why this order', `
+    <div class="dk info"><span class="flag">The whole idea</span>
+      <h3>${esc(WHY.headline)}</h3><p>${esc(WHY.short)}</p></div>
+    ${WHY.steps.map((s,i)=>`<div class="pan"><div class="pan-b">
+      <div class="slotrow" style="border-top:none;padding-top:0;align-items:flex-start">
+        <div class="slotn ${i===WHY.steps.length-1?'done':''}">${i+1}</div>
+        <div class="row-b"><div class="lbl" style="margin-bottom:3px">${esc(s.n)}</div>
+          <h4 style="font-size:15.5px;font-weight:700;margin-bottom:6px">${esc(s.t)}</h4>
+          <p class="sub">${esc(s.b)}</p></div></div>
+    </div></div>`).join('')}
+    <p class="foot">${esc(WHY.caveat)}</p>`);
 }
 
 /* ---------- merge the extended library ---------- */
@@ -2849,13 +2896,13 @@ const GOALS=[['joint','Long-term joint health'],['sport','Get back to a sport'],
 const SPORTS=['Volleyball','Running','Cycling','Swimming','Tennis','Basketball','Climbing','Other'];
 
 const OB=[
- {id:'hello', title:'Range', lede:'A training log built around one idea: your joints have a working range, and everything worth doing happens inside it. Six quick questions and it is yours.', kind:'intro'},
+ {id:'hello', title:'Range', lede:'Master your motion. The app builds stabilizer muscles first, then strength, because together they give you control and function now and as you age. A few questions and it is yours.', kind:'intro'},
  {id:'joints', title:'Which joints give you trouble?', lede:'Pick all that apply. This decides what the app shows you and what it keeps out of your sessions.', kind:'multi', key:'joints', opts:JOINTS.map(j=>[j,j[0].toUpperCase()+j.slice(1)])},
  {id:'restrict', title:'Anything a clinician has restricted?', lede:'Pick the area, then which side. A one-sided restriction does not remove the exercise — it marks it so you only work the side you are cleared for.', kind:'restrict'},
  {id:'space', title:'Where do you train?', lede:'Sessions only ever suggest exercises you can actually do where you are.', kind:'multi', key:'spaces', opts:SPACES},
  {id:'equip', title:'What do you have?', lede:'Two of these matter more than they look. A chair and a lacrosse ball unlock most of the boundary modifications.', kind:'multi', key:'equip', opts:EQUIP},
  {id:'incr', title:'Smallest weight jump you own', lede:'This is the size of every load increase the app will ever suggest. Small increments matter here more than in general training, because connective tissue adapts slower than muscle.', kind:'incr'},
- {id:'goal', title:'What are you working toward?', lede:'This shapes what gets emphasised. You can add more later.', kind:'goal'},
+ {id:'goal', title:'What are you working toward?', lede:'This shapes what gets emphasized. You can add more later.', kind:'goal'},
  {id:'plan', title:'How much training can you actually do?', lede:'Be honest rather than aspirational. A plan you hit four weeks running beats one you abandon in week two.', kind:'plan'},
  {id:'target', title:'Anything you are working toward?', lede:'A date gives the app something to count back from. You can skip this and add it later.', kind:'target'},
  {id:'phase', title:'Where are you starting?', lede:'There is no wrong answer and nothing is locked by it.', kind:'phase'}
@@ -2865,10 +2912,15 @@ function obScreen(){
   const st=OB[ob.step], p=ob.draft;
   let body='';
   if(st.kind==='intro'){
-    body=`<div class="dk info"><span class="flag">What it does</span>
-      <p style="font-size:14.5px;line-height:1.5">Tracks load, reps and control alongside joint symptoms, and tells you each week what to raise and what to leave alone. It never suggests going deeper into a range.</p></div>
-      <div class="dk info"><span class="flag">What it is not</span>
-      <p>Not a prescription and not a substitute for a clinician who can look at your joints. Take the exercise list to your PT before you add anything new.</p></div>`;
+    body=`<div class="dk info"><span class="flag">The whole idea</span>
+      <h3>${esc(WHY.headline)}</h3><p>${esc(WHY.short)}</p></div>
+      ${WHY.steps.map((x,i)=>`<div class="slotrow">
+        <div class="slotn ${i===WHY.steps.length-1?'done':''}">${i+1}</div>
+        <div class="row-b"><div class="lbl">${esc(x.n)}</div>
+          <h4 style="font-size:14.5px;font-weight:600;margin-top:2px">${esc(x.t)}</h4></div></div>`).join('')}
+      <button class="b b-pa b-w b-s" style="margin-top:16px" data-why="1">Read why</button>
+      <div class="dk" style="margin-top:14px"><span class="flag">What it is not</span>
+        <p>Not a prescription and not a substitute for a clinician who can look at your joints. Take the exercise list to your PT before you add anything new.</p></div>`;
   }
   if(st.kind==='multi'){
     const sel=p[st.key]||[];
@@ -3210,8 +3262,10 @@ function scToday(){
 function scPlan(){
   const wk=weekPlan();
   return `${band('Progression','This week',wk.length+' tracked')}
-  <div class="dk info"><div class="lbl" style="margin-bottom:6px">How the gate works</div>
-    <p>Load goes up only after two consecutive sessions with control 4 or better and joint symptom 2 or lower. Reps and hold time climb before weight. Depth is never on the ladder.</p></div>
+  <div class="dk info"><span class="flag">How the gate works</span>
+    <p>Load goes up only after two consecutive sessions with control 4 or better and joint symptom 2 or lower. Reps and hold time climb before weight. Depth is never on the ladder.</p>
+    <p style="margin-top:9px">Stabilizers before strength. That order is what makes load protective rather than risky, because a joint has to be held before it is worth loading.</p>
+    <button class="b b-pa b-w b-s" style="margin-top:11px" data-why="1">Why this order</button></div>
   ${wk.length?wk.map(x=>{const e=exById(x.id),b=x.s.b;
     return `<div class="pan"><div class="pan-b">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
@@ -3334,9 +3388,12 @@ function scYou(){
   </div></div>
   <div class="pan"><div class="pan-hd"><h3>Compensation patterns</h3><span class="lbl">${(p.comps||[]).length} flagged</span></div>
     <div class="pan-b">
-    <p class="sub" style="margin-bottom:11px">Neck taking over during arm work, glutes that will not fire because they are bracing your back — flag the ones you recognise and sessions change accordingly.</p>
+    <p class="sub" style="margin-bottom:11px">Neck taking over during arm work, glutes that will not fire because they are bracing your back — flag the ones you recognize and sessions change accordingly.</p>
     ${(p.comps||[]).length?`<div class="pills" style="margin-top:0;margin-bottom:11px">${(p.comps||[]).map(c=>`<span class="pill a">${esc(COMPMAP[c].label)}</span>`).join('')}</div>`:''}
     <button class="b b-pa b-w b-s" data-comps="1">${(p.comps||[]).length?'Change these':'Set these up'}</button></div></div>
+  <div class="pan"><div class="pan-hd"><h3>Why this order</h3></div><div class="pan-b">
+    <p class="sub" style="margin-bottom:11px">${esc(WHY.short)}</p>
+    <button class="b b-pa b-w b-s" data-why="1">Read it</button></div></div>
   <div class="pan"><div class="pan-hd"><h3>Rating scales</h3></div><div class="pan-b">
     <p class="sub" style="margin-bottom:11px">Muscle burn is expected. Joint pain is the signal. They are logged separately and only the joint score gates progression.</p>
     <button class="b b-pa b-w b-s" data-rub="1">Read the full scales</button></div></div>
@@ -3678,7 +3735,7 @@ function sheetFocus(sport, faId){
       ${fa.produces.length?`<div class="lbl" style="margin-bottom:7px">Produces the force</div>
         <div class="pills" style="margin-top:0;margin-bottom:14px">${fa.produces.map(m=>`<span class="pill l">${esc(m)}</span>`).join('')}</div>`:''}
       <div class="lbl" style="margin-bottom:7px">Has to hold still for it to transfer</div>
-      <div class="pills" style="margin-top:0">${fa.stabilise.map(m=>`<span class="pill m">${esc(m)}</span>`).join('')}</div>
+      <div class="pills" style="margin-top:0">${fa.stabilize.map(m=>`<span class="pill m">${esc(m)}</span>`).join('')}</div>
       <p class="sub" style="margin-top:11px">The second group is the one that goes missing with hypermobility. They do not produce the movement — they give the producing muscles something solid to pull against.</p>
     </div></div>
     ${ready.length?`<div class="pan"><div class="pan-hd"><h3>Ready now</h3><span class="lbl">${ready.length}</span></div>
@@ -3717,7 +3774,7 @@ function sheetComp(id){
 function sheetComps(){
   const on=S.profile.comps||[];
   openSheet('Compensation patterns', `
-    <p class="sub" style="margin-bottom:14px">The muscle that should work stays quiet and something else takes over. It does not show up in a log — the reps look fine while the wrong thing does them. Flag the ones you recognise and the app changes what it picks, what it cues, and what it warns you about.</p>
+    <p class="sub" style="margin-bottom:14px">The muscle that should work stays quiet and something else takes over. It does not show up in a log — the reps look fine while the wrong thing does them. Flag the ones you recognize and the app changes what it picks, what it cues, and what it warns you about.</p>
     ${COMPS.map(c=>`<div class="pan"><div class="pan-b">
       <div class="slotrow" style="border-top:none;padding-top:0">
         <button class="tg" data-toggcomp="${c.id}" aria-pressed="${on.includes(c.id)}"><span></span></button>
@@ -3775,7 +3832,7 @@ const PRESETS={p_feet:{name:'Feet and ankles',ex:['short_foot','toe_spread','cal
  p_short:{name:'Short day',ex:['short_foot','wall_sit','scap_set','neck_iso']}};
 
 document.addEventListener('click',ev=>{
-  const el=ev.target.closest('[data-ob],[data-tab],[data-go],[data-ex],[data-f],[data-preset],[data-mod],[data-add],[data-log],[data-opt],[data-save],[data-end],[data-tm],[data-restr],[data-tog],[data-rub],[data-morn],[data-exp],[data-reset],[data-photo],[data-demo],[data-apply],[data-base],[data-savebase],[data-redo],[data-mins],[data-build],[data-slot],[data-psport],[data-issue],[data-issuepick],[data-addall],[data-focus],[data-fa],[data-comp],[data-comps],[data-toggcomp],[data-sview],[data-lvl],[data-ready],[data-rq],[data-readysave],[data-mode],[data-restore]');
+  const el=ev.target.closest('[data-ob],[data-tab],[data-go],[data-ex],[data-f],[data-preset],[data-mod],[data-add],[data-log],[data-opt],[data-save],[data-end],[data-tm],[data-restr],[data-tog],[data-rub],[data-morn],[data-exp],[data-reset],[data-photo],[data-demo],[data-apply],[data-base],[data-savebase],[data-redo],[data-mins],[data-build],[data-slot],[data-psport],[data-issue],[data-issuepick],[data-addall],[data-focus],[data-fa],[data-comp],[data-comps],[data-toggcomp],[data-sview],[data-lvl],[data-ready],[data-rq],[data-readysave],[data-mode],[data-restore],[data-why]');
   if(!el) return; const d=el.dataset;
 
   if(d.ob){ obClick(d.ob); return; }
@@ -3827,6 +3884,7 @@ document.addEventListener('click',ev=>{
   if(d.lvl){ const [ex,mid,i]=d.lvl.split('|');
     setModLevel(ex,mid,Number(i)); sheetEx(ex);
     toast(MODMAP[mid].levels[Number(i)].label); return; }
+  if(d.why){ whySheet(); return; }
   if(d.ready){ readyDraft={}; sheetReady(); return; }
   if(d.rq){ const [k,v]=d.rq.split('|'); readyDraft[k]=v; sheetReady(); return; }
   if(d.readysave){ setReadiness(readyDraft); closeSheet(); render();
