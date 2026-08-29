@@ -296,23 +296,35 @@ p{margin:0}
 :root{ --chas:#0B1620; --chas-2:#16293A; --chas-line:#4A7186; --chas-text:#F2F7F8; --chas-mute:#9FBAC7; }
 
 #splash{position:fixed;inset:0;z-index:200;background:var(--chas);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:2px;transition:opacity .5s ease,visibility .5s}
+  align-items:center;justify-content:center;gap:0;transition:opacity .6s ease,visibility .6s}
 #splash.gone{opacity:0;visibility:hidden;pointer-events:none}
 #splash .mk{width:190px;height:132px}
 #splash .wm{font-family:var(--disp);font-weight:700;font-size:42px;letter-spacing:.15em;color:var(--chas-text);
-  margin-top:14px;opacity:0;animation:rise .6s .75s ease forwards;text-indent:.16em}
-#splash .tag{font-family:var(--disp);font-weight:600;font-size:19px;line-height:1.3;color:var(--chas-text);
-  letter-spacing:-.01em;text-align:center;margin-top:14px;opacity:0;animation:rise .6s 1.05s ease forwards}
-#splash .tag2{font-size:13.5px;line-height:1.6;color:var(--chas-mute);max-width:300px;text-align:center;
-  margin-top:9px;opacity:0;animation:rise .6s 1.3s ease forwards}
+  margin-top:14px;opacity:0;animation:rise .55s 1.15s ease forwards;text-indent:.16em}
+/* four levels, each on its own beat.
+   The phrase slides in from the left slanted, then straightens as it settles. */
+#splash .tag{margin-top:18px;overflow:hidden;padding:2px 6px}
+#splash .tag span{display:inline-block;font-family:var(--disp);font-weight:600;font-size:23px;line-height:1.25;
+  color:var(--chas-text);letter-spacing:-.015em;text-align:center;
+  opacity:0;transform:translateX(-56px) skewX(-13deg) scale(1.14);
+  animation:slantin .8s 1.5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes slantin{
+  0%  {opacity:0;transform:translateX(-56px) skewX(-13deg) scale(1.14)}
+  38% {opacity:1}
+  100%{opacity:1;transform:translateX(0) skewX(0) scale(1)}}
+#splash .tag2{font-family:var(--disp);font-weight:600;font-size:16.5px;letter-spacing:.05em;color:#8FB6C8;
+  text-align:center;margin-top:12px;opacity:0;animation:rise .55s 2.15s ease forwards}
+#splash .tag3{font-family:var(--body);font-weight:400;font-size:13px;line-height:1.5;color:var(--chas-mute);
+  max-width:270px;text-align:center;margin-top:20px;padding-top:15px;border-top:1px solid var(--chas-line);
+  opacity:0;animation:rise .55s 2.6s ease forwards}
 #splash .skip{position:absolute;inset:0}
 @keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
-.sweep{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw .85s .1s cubic-bezier(.4,0,.2,1) forwards}
+.sweep{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.05s .15s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
-.tick{opacity:0;animation:pop .3s .92s cubic-bezier(.34,1.56,.64,1) forwards}
+.tick{opacity:0;animation:pop .34s 1.2s cubic-bezier(.34,1.56,.64,1) forwards}
 @keyframes pop{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
-.hatch{opacity:0;animation:fade .5s 1.1s ease forwards}
-.pivot{opacity:0;animation:fade .3s .3s ease forwards}
+.hatch{opacity:0;animation:fade .55s 1.42s ease forwards}
+.pivot{opacity:0;animation:fade .35s .45s ease forwards}
 @keyframes fade{to{opacity:1}}
 
 /* dark header band — depth, and the mark on every screen */
@@ -337,7 +349,7 @@ p{margin:0}
 .pan:nth-of-type(2){animation-delay:.04s} .pan:nth-of-type(3){animation-delay:.08s}
 .pan:nth-of-type(4){animation-delay:.12s} .pan:nth-of-type(n+5){animation-delay:.16s}
 @media (prefers-reduced-motion:reduce){
-  .pan,#splash .wm,#splash .tag,#splash .tag2,.sweep,.tick,.hatch,.pivot{animation:none!important;opacity:1!important;
+  .pan,#splash .wm,#splash .tag span,#splash .tag2,#splash .tag3,.sweep,.tick,.hatch,.pivot{animation:none!important;opacity:1!important;
     stroke-dashoffset:0!important;transform:none!important}}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -348,7 +360,8 @@ p{margin:0}
 <!-- ============================================================
      TAGLINE — one line, change it here.
      Line 1 (.tag)   Master your motion
-     Line 2 (.tag2)  Smart movement & training for hypermobile bodies. / Strength for the long run.
+     Line 2 (.tag2)  Strength for the long run
+     Line 3 (.tag3)  Smart movement & training for hypermobile bodies.
      Either can be edited or deleted independently.
      ============================================================ -->
 <div id="splash">
@@ -361,8 +374,9 @@ p{margin:0}
     </g>
   </svg>
   <div class="wm">RANGE</div>
-  <div class="tag" id="tagline">Master your motion</div>
-  <div class="tag2" id="tagline2">Smart movement &amp; training for hypermobile bodies.<br>Strength for the long run.</div>
+  <div class="tag" id="tagline"><span>Master your motion</span></div>
+  <div class="tag2" id="tagline2">Strength for the long run</div>
+  <div class="tag3" id="tagline3">Smart movement &amp; training for hypermobile bodies.</div>
   <button class="skip" id="skip" aria-label="Continue"></button>
 </div>
 <div id="app"><div id="screen" class="screen"></div><nav class="tb" id="tbwrap"><div class="tb-in" id="tabbar"></div></nav></div>
@@ -2755,7 +2769,7 @@ function openIssues(){
    ============================================================ */
 const WHY={
  headline:'Build stabilizer muscles first, then strength. Together they give you control and function now and as you age.',
- short:'A hypermobile joint has more range than its ligaments can control on their own. Muscle is the part of that control you can build, so the order is stabilizers first, then strength.',
+ short:'Ligaments in a hypermobile joint cannot govern it on their own. Muscle is the part of that control you can actually build, which is why the order matters.',
  steps:[
   {n:'Stage 1', t:'Stabilize your joints',
    b:'Help your muscles and ligaments work together. Ligaments in a hypermobile joint are longer and more elastic than they need to be, so they cannot govern the joint on their own. The muscles around it have to take on part of that job. Before a joint is loaded, those muscles need to be able to hold it in position, and you need to be able to sense where the joint is, which is harder when position sense is reduced.'},
@@ -2896,7 +2910,7 @@ const GOALS=[['joint','Long-term joint health'],['sport','Get back to a sport'],
 const SPORTS=['Volleyball','Running','Cycling','Swimming','Tennis','Basketball','Climbing','Other'];
 
 const OB=[
- {id:'hello', title:'Range', lede:'Master your motion. The app builds stabilizer muscles first, then strength, because together they give you control and function now and as you age. A few questions and it is yours.', kind:'intro'},
+ {id:'hello', title:'Range', lede:'An exercise library and training log for hypermobile joints. A few questions and it is set up for you.', kind:'intro'},
  {id:'joints', title:'Which joints give you trouble?', lede:'Pick all that apply. This decides what the app shows you and what it keeps out of your sessions.', kind:'multi', key:'joints', opts:JOINTS.map(j=>[j,j[0].toUpperCase()+j.slice(1)])},
  {id:'restrict', title:'Anything a clinician has restricted?', lede:'Pick the area, then which side. A one-sided restriction does not remove the exercise — it marks it so you only work the side you are cleared for.', kind:'restrict'},
  {id:'space', title:'Where do you train?', lede:'Sessions only ever suggest exercises you can actually do where you are.', kind:'multi', key:'spaces', opts:SPACES},
@@ -3967,7 +3981,7 @@ function dismissSplash(){ const s=$('splash'); if(s&&!s.classList.contains('gone
 load().then(loadPhotos).then(()=>{
   render();
   const sk=$('skip'); if(sk) sk.addEventListener('click',dismissSplash);
-  setTimeout(dismissSplash, 2100);
+  setTimeout(dismissSplash, 4500);
 });
 </script>
 </body>
