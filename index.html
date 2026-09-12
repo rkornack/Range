@@ -5553,6 +5553,19 @@ function scYou(){
  <div class="pan"><div class="pan-hd"><h3>Rating scales</h3></div><div class="pan-b">
  <p class="sub" style="margin-bottom:11px">Muscle burn is expected. Joint pain is the signal. They are logged separately and only the joint score gates progression.</p>
  <button class="b b-pa b-w b-s" data-rub="1">Read the full scales</button></div></div>
+ <div class="pan"><div class="pan-hd"><h3>Version and updates</h3><span class="lbl">${esc(BUILD)}</span></div>
+ <div class="pan-b tight">
+ <div class="slotrow" style="border-top:none;padding-top:0">
+ <div class="slotn ${SW.state==='on'?'done':''}">${SW.state==='on'?'&#10003;':SW.state==='pending'?'&middot;':'!'}</div>
+ <div class="row-b"><h4 style="font-size:14.5px;font-weight:600">Auto-update: ${esc(SW_LABEL[SW.state]||'')}</h4>
+ <div class="sub">${esc(SW.detail||'')}</div></div></div>
+ <div class="slotrow">
+ <div class="slotn done">&#10003;</div>
+ <div class="row-b"><h4 style="font-size:14.5px;font-weight:600">Stored on this device</h4>
+ <div class="sub">${(S.logs||[]).length} logged sets${storageSize()?', about '+storageSize()+' KB':''}. Held by the home screen icon, so deleting the icon deletes them.</div></div></div>
+ <button class="b b-pa b-w b-s" style="margin-top:10px" data-swcheck="1">Check for an update</button>
+ <p class="sub" style="margin-top:10px">The number above is the version running right now. If it is not the one you just uploaded, you are looking at a cached copy.</p>
+ </div></div>
  <div class="pan"><div class="pan-hd"><h3>Back up before you update</h3></div><div class="pan-b">
  <p class="sub" style="margin-bottom:11px">Deleting the home screen icon deletes your logs with it. Take a copy first and you can restore in seconds.</p>
  <button class="b b-go b-w b-s" data-backup="1">Back up and restore</button></div></div>
@@ -5968,6 +5981,47 @@ function sheetComps(){
 }
 
 
+/* ---------- is auto-update actually running? ---------- */
+let SW={state:'checking', detail:'', checked:null};
+async function swCheck(){
+  if(!('serviceWorker' in navigator)){
+    Object.assign(SW,{state:'unsupported', detail:'This browser cannot auto-update. Updating means deleting and re-adding the icon, so back up first.', checked:new Date()});
+    return SW;
+  }
+  try{
+    const reg = await navigator.serviceWorker.getRegistration();
+    if(!reg){
+      Object.assign(SW,{state:'missing', detail:'sw.js was not found next to the app. Upload it to the same folder in your repo, then close and reopen the app once.', checked:new Date()});
+    } else if(navigator.serviceWorker.controller){
+      Object.assign(SW,{state:'on', detail:'Updates arrive on their own. You do not need to delete the home screen icon.', checked:new Date()});
+    } else {
+      Object.assign(SW,{state:'pending', detail:'Registered but not yet in charge. Close the app fully and reopen it once, and this will read active.', checked:new Date()});
+    }
+  }catch(e){
+    Object.assign(SW,{state:'missing', detail:'Could not read the update status.', checked:new Date()});
+  }
+  return SW;
+}
+async function swUpdateNow(){
+  if(!('serviceWorker' in navigator)) return 'unsupported';
+  const reg = await navigator.serviceWorker.getRegistration();
+  if(!reg) return 'missing';
+  await reg.update();
+  await swCheck();
+  return reg.waiting ? 'waiting' : 'current';
+}
+function storageSize(){
+  try{
+    let n=0;
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k && k.indexOf('range')===0) n += (localStorage.getItem(k)||'').length;
+    }
+    return Math.max(1, Math.round(n/1024));
+  }catch(e){ return null; }
+}
+const SW_LABEL={on:'Active', pending:'Almost', missing:'Not set up', unsupported:'Unavailable', checking:'Checking'};
+
 /* ============================================================
    BACKUP
    Everything the app knows, as one block of text. Deleting a home
@@ -6167,7 +6221,7 @@ let audioUnlocked=false;
 document.addEventListener('touchend',()=>{ if(!audioUnlocked){ audioUnlocked=true; unlockAudio(); } },{passive:true});
 document.addEventListener('click',ev=>{
   if(!audioUnlocked){ audioUnlocked=true; unlockAudio(); }
- const el=ev.target.closest('[data-ob],[data-tab],[data-go],[data-ex],[data-f],[data-preset],[data-mod],[data-add],[data-log],[data-opt],[data-save],[data-end],[data-tm],[data-restr],[data-tog],[data-rub],[data-morn],[data-exp],[data-reset],[data-photo],[data-demo],[data-apply],[data-base],[data-savebase],[data-redo],[data-mins],[data-build],[data-slot],[data-psport],[data-issue],[data-issuepick],[data-addall],[data-focus],[data-fa],[data-comp],[data-comps],[data-toggcomp],[data-sview],[data-lvl],[data-ready],[data-rq],[data-readysave],[data-mode],[data-restore],[data-why],[data-guard],[data-principles],[data-credits],[data-cue],[data-prime],[data-buildprime],[data-routine],[data-addroutine],[data-swing],[data-tempo],[data-startday],[data-seeday],[data-rebuild],[data-loadwhy],[data-loadoverride],[data-sound],[data-backup],[data-bkcopy],[data-bkmail],[data-bkrestore],[data-gstart],[data-gwork],[data-gpause],[data-gskip],[data-gnext],[data-gprev],[data-ggo],[data-gstop],[data-discard],[data-feel],[data-open],[data-buildslot],[data-buildiso],[data-addrestr],[data-rs],[data-rf],[data-rsave],[data-delrestr],[data-rscope],[data-addcustom],[data-cs],[data-cf],[data-csave],[data-delcustom],[data-promote]');
+ const el=ev.target.closest('[data-ob],[data-tab],[data-go],[data-ex],[data-f],[data-preset],[data-mod],[data-add],[data-log],[data-opt],[data-save],[data-end],[data-tm],[data-restr],[data-tog],[data-rub],[data-morn],[data-exp],[data-reset],[data-photo],[data-demo],[data-apply],[data-base],[data-savebase],[data-redo],[data-mins],[data-build],[data-slot],[data-psport],[data-issue],[data-issuepick],[data-addall],[data-focus],[data-fa],[data-comp],[data-comps],[data-toggcomp],[data-sview],[data-lvl],[data-ready],[data-rq],[data-readysave],[data-mode],[data-restore],[data-why],[data-guard],[data-principles],[data-credits],[data-cue],[data-prime],[data-buildprime],[data-routine],[data-addroutine],[data-swing],[data-tempo],[data-startday],[data-seeday],[data-rebuild],[data-loadwhy],[data-loadoverride],[data-sound],[data-backup],[data-bkcopy],[data-bkmail],[data-bkrestore],[data-swcheck],[data-gstart],[data-gwork],[data-gpause],[data-gskip],[data-gnext],[data-gprev],[data-ggo],[data-gstop],[data-discard],[data-feel],[data-open],[data-buildslot],[data-buildiso],[data-addrestr],[data-rs],[data-rf],[data-rsave],[data-delrestr],[data-rscope],[data-addcustom],[data-cs],[data-cf],[data-csave],[data-delcustom],[data-promote]');
  if(!el) return; const d=el.dataset;
 
  if(d.ob){ obClick(d.ob); return; }
@@ -6413,6 +6467,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+swCheck().then(()=>{ if(view==='you') render(); });
 load().then(loadPhotos).then(()=>{
  mergeCustom();
  render();
