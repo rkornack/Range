@@ -224,9 +224,10 @@ p{margin:0}
 
 .ng{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
 .nf label{display:block;font-family:var(--mn);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--mute);margin-bottom:5px}
-.nf input,.nf select{width:100%;height:52px;border:1.5px solid var(--line);border-radius:5px;background:var(--surf);
+.nf input,.nf select{width:100%;max-width:100%;min-width:0;box-sizing:border-box;height:52px;border:1.5px solid var(--line);border-radius:5px;background:var(--surf);
   padding:0 12px;font-family:var(--mn);font-size:19px;font-weight:500;text-align:center;color:var(--ink);color-scheme:light}
-.nf input[type=date]{text-align:left;font-size:16px}
+.nf input[type=date]{text-align:left;font-size:16px;max-width:100%;min-width:0;
+  -webkit-appearance:none;appearance:none;display:block}
 .nf input:focus,.nf select:focus{outline:3px solid var(--sta);outline-offset:-1px}
 
 .note{background:var(--lim-soft);border:1px solid var(--lim);border-radius:5px;padding:11px 12px;font-size:13px;
@@ -403,6 +404,30 @@ const MODS = [
  {id:'lacrosse_ankles', name:'Lacrosse ball between ankles', perm:'boundary', why:'Holds foot and ankle alignment and adds an isometric squeeze so the ankles cannot splay outward.', equip:'lacrosse ball', delta:{proprio:1}, locks:['alignment']},
  {id:'roller_knees', name:'Foam roller between knees', perm:'boundary', why:'Stops the knees traveling inward under load.', equip:'foam roller or block', delta:{}, locks:['knee_track']},
  {id:'depth_90', name:'Stop at 90 degrees', perm:'boundary', why:'Caps knee and hip flexion at a right angle. Going deeper adds range, not strength.', equip:'none', delta:{rom:'mid_range'}, locks:['depth']},
+ {id:'band_assist', name:'Band assistance', perm:'support',
+  why:'A band anchored above takes part of your weight, so you can work the pattern at a load your joint can currently control. Removing it later is progression.',
+  equip:'a long band and something to anchor it to', delta:{}},
+ {id:'hands_down', name:'Hands on a support', perm:'support',
+  why:'A hand on a counter or a rail removes the balance demand so the working muscle can be the limit rather than your balance. Taking the hand away later is progression.',
+  equip:'a counter, rail or wall', delta:{balance:-1}},
+ {id:'strap_wrap', name:'Strap around the joint', perm:'support',
+  why:'A firm wrap gives the skin around the joint something to report, which sharpens the brain\u2019s sense of where the joint is. Useful on an area that feels vague rather than weak.',
+  equip:'an elastic wrap or a long strap', delta:{proprio:-1}},
+ {id:'pause_hard', name:'Pause at the hardest point', perm:'challenge',
+  why:'Holding two seconds where the exercise is hardest removes any bounce and makes the muscle produce the force on its own.',
+  equip:'nothing', delta:{}},
+ {id:'offset_load', name:'Weight in one hand', perm:'challenge',
+  why:'Loading one side makes the trunk resist being pulled sideways while the legs do the work. More demanding than the same weight split evenly.',
+  equip:'one dumbbell or a bag', delta:{proprio:1}},
+ {id:'head_turn', name:'Head turns', perm:'challenge',
+  why:'Turning the head while you balance removes the visual reference, so the joint has to rely on its own position sense. A step beyond closing your eyes on a stable surface.',
+  equip:'nothing', delta:{proprio:1,balance:1}},
+ {id:'tempo_down', name:'Longer lowering', perm:'challenge',
+  why:'Lowering over five counts instead of three adds time under tension at the same weight, which loads the muscle harder without loading the joint harder.',
+  equip:'nothing', delta:{}},
+ {id:'seated_version', name:'Seated version', perm:'accommodation',
+  why:'Doing the exercise sitting removes the standing demand on days when blood pressure or fatigue makes standing work unreliable.',
+  equip:'a chair', delta:{balance:-1,autonomic:-1}},
  {id:'heel_elev', name:'Heels elevated', perm:'support',
  why:'Raising the heels lets you stay upright and sends more of the work to the knee, which is often the weakest link in a hypermobile lower body. It also reduces how much the ankle has to bend, so a stiff or unreliable ankle stops being what limits the squat.',
  equip:'a low wedge, plates, or a rolled mat',
@@ -799,7 +824,7 @@ side_plank_knee:{setup:["Lie on your side with your forearm flat and your elbow 
    viewBox 200x150, floor at y=136.
    near limbs solid, far limbs lighter, so side views read correctly.
    ============================================================ */
-const FG={ink:'#0D1519', far:'#93A4AB', prop:'#B9AF9A', acc:'#0F5A66', lim:'#7A4A00'};
+const FG={ink:'#17191C', far:'#9C9995', prop:'#B2AFAA', acc:'#153484', lim:'#9E2C6B'};
 function plyn(pts,c,w){ return `<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="${w||7}" stroke-linecap="round" stroke-linejoin="round"/>`; }
 function pose(o){
  const P=[];
@@ -3679,7 +3704,7 @@ function suggest(id){
  if(!good(last)) return {k:'hold', act:'Hold here',
  why:`Needs control 4 or better and joint 2 or lower. Last time: control ${last.control}, joint ${last.symptom}.`, b};
  if(!good(prev)) return {k:'hold', act:'One more session at these numbers',
- why:'The gate needs two consecutive sessions that both clear it. This was the first.', b};
+ why:'This needs two sessions in a row that both meet it. That was the first.', b};
 
  /* gate met — climb the ladder */
  if(b.target<cap.hi){ const nt=Math.min(cap.hi, b.target+cap.step);
@@ -4067,7 +4092,8 @@ const CREDITS=[
  {n:'The Fibro Guy', w:'Guarding, closed-chain loading, knee and stair work', u:'https://www.thefibroguy.com/exercise-rehabilitation-hypermobility-guide/'},
  {n:'Melissa Koehl', w:'Heel-elevated and propped squat work, 90/90 glute bridge, positional inhibition', u:'https://www.facebook.com/melissa.koehl.5/'},
  {n:'Annie Short, The Hypermobile Strength Coach', w:'Tactical distraction, block-between-knees bracing', u:'https://www.instagram.com/thehypermobilestrengthcoach/'},
- {n:'The Physio Fix', w:'Banded plank anchoring, lockout prevention', u:'https://www.facebook.com/thephysiofix/'}
+ {n:'The Physio Fix', w:'Banded plank anchoring, lockout prevention', u:'https://www.facebook.com/thephysiofix/'},
+ {n:'Brandon Blinn (Blinnergy)', w:'Squeeze-first glute bridge, three points of contact in a lunge', u:'https://www.tiktok.com/@its_brandon_blinn'}
 ];
 function creditsSheet(){
  openSheet('Credits', `
@@ -4208,11 +4234,12 @@ scap_pushup:{why:'The serratus is easy to skip because the arms can do the whole
 band_row:{why:'Rows drift into the upper traps and the arms in a hypermobile shoulder.',
  tips:['Lead with the elbow, not the hand, and finish the pull down toward the ribs, not back.',
  'Set the shoulder blade down and in before the arm starts, and hold it there through the whole rep.']},
-glute_bridge:{why:'Hamstrings and lower back take a bridge over easily, and the glutes never get the message.',
- tips:['Push the floor away through the heels and slightly outward, as if trying to spread the floor apart.',
- 'Turn the toes in very slightly, which biases the glutes over the hamstrings.',
- 'Exhale fully before lifting. Bracing through the back and gripping the glutes rarely happen at the same time.',
- 'If you cramp in the hamstrings, bring the heels closer to your backside.']},
+glute_bridge:{why:'Hamstrings and lower back take a bridge over easily, and the glutes never get the message. Two coaches give opposite instructions here and both work for some people, so try each.',
+ tips:['One way: push the floor away through the heels and slightly outward, as if spreading the floor apart.',
+  'The other way, from Brandon Blinn: do not push through the feet at all. Squeeze the glutes first and let the hips rise because of that squeeze. If pushing through the heels sends it to your hamstrings, this is the one to try.',
+  'Turn the toes in very slightly, which biases the glutes over the hamstrings.',
+  'Exhale fully before lifting. Bracing through the back and squeezing the glutes rarely happen at the same time.',
+  'If you cramp in the hamstrings, bring the heels closer to your backside, or switch to the squeeze-first version.']},
 hip_abd_side:{why:'A straight sideways lift lets the hip flexors and the outer thigh do the work while the glute medius stays quiet.',
  tips:['Take the leg back a few degrees behind the line of your body as you lift, not straight out to the side.',
  'Turn the top knee slightly toward the ceiling, which points the fibres of the glute medius into the job.',
@@ -4262,7 +4289,9 @@ hip_thrust:{why:'Arching the back is how most people get the last few inches of 
  'Stop at the straight line from knee to shoulder. Anything past it is the lower back.']},
 split_squat:{why:'The front knee drifts inward and the quad takes over.',
  tips:['Push the floor away and slightly apart with the front foot.',
- 'Feel for the front glute at the bottom of the descent. If it is silent, sit back a little further.']},
+  'Three points of contact through the front foot, from Brandon Blinn: base of the big toe, base of the little toe, and the heel, all loaded before you descend.',
+  'Set the lats and the brace before the first rep, not partway down.',
+  'Feel for the front glute at the bottom of the descent. If it is silent, sit back a little further.']},
 calf_stand:{why:'The ankles roll outward and the load skips the inner calf and the big toe.',
  tips:['Press through the base of the big toe as you rise, not the outer edge.',
  'The lacrosse ball between the ankles gives you something to squeeze, which holds the alignment for you.']},
@@ -4576,7 +4605,7 @@ function sheetRoutine(id){
  <div class="pan"><div class="pan-b"><div class="lbl" style="margin-bottom:7px">How a routine works</div>
  <p class="sub">A fixed sequence in a set order, which you add to a session instead of the app choosing exercises for you. Tapping the button below inserts these at the ${r.when==='before'?'start':'end'} of whatever session you have open, or starts a new one if you have none.</p></div></div>
  ${st.partial?`<div class="note"><b>${st.locked.length} of ${st.total} steps unavailable</b>Adding it will run the ${st.open} that are open to you. A warm-up still does its job with steps missing.</div>`
- :!st.ready?`<div class="note"><b>Not available yet</b>${st.locked.length} of ${st.total} steps are hidden by a restriction or behind a gate. The order matters in this one, so it opens when they do. Each step below says what it is waiting on.</div>`:''}
+ :!st.ready?`<div class="note"><b>Not available yet</b>${st.locked.length} of ${st.total} steps are hidden by a restriction or not available yet. The order matters in this one, so it opens when they do. Each step below says what it is waiting on.</div>`:''}
  <div class="pan"><div class="pan-hd"><h3>The sequence</h3><span class="lbl">in order</span></div>
  <div class="pan-b tight">
  ${r.ex.map((x,i)=>{const e=exById(x); if(!e) return '';
@@ -5011,7 +5040,7 @@ function obScreen(){
  ${(p.goals||[]).includes('sport')?`<div class="lbl" style="margin-bottom:9px">Which sports, pick as many as apply</div>
  <div class="chipwrap">${SPORT_KEYS.map(s=>`<button class="chip" data-ob="sport|${s}" aria-pressed="${(p.sports||[]).includes(s)}">${esc(SPORTS_DEF[s].label)}</button>`).join('')}</div>
  ${(p.sports||[]).length?`<div class="dk info" style="margin-top:16px"><span class="flag">What this changes</span>
- <p>Exercises that serve ${(p.sports||[]).map(s=>SPORTS_DEF[s].label).join(' or ')} get a tag in the library and get picked sooner when a session is built. A star means it trains a direct demand of the sport; a plus means it supports it.</p></div>`:''}`:''}`;
+ <p>Exercises that serve ${(p.sports||[]).map(s=>SPORTS_DEF[s].label).join(' or ')} are tagged in the library, and the app reaches for them sooner when it builds a session. A star means it trains a direct demand of the sport; a plus means it supports it.</p></div>`:''}`:''}`;
  }
  if(st.kind==='plan'){
  const n=p.perWeek||0;
@@ -5120,22 +5149,25 @@ function mark(w){
 }
 /* a live gauge: fills to a proportion, stop tick at the boundary */
 function gauge(w, frac, col){
+ /* the same drawing as the logo, filled to a proportion. Every part is the
+    ink colour at a different weight, so it reads as one mark rather than a
+    chart sitting next to one. */
  const h=Math.round(w*0.70), cx=w/2, cy=h*0.86, R=w*0.38;
  const A0=196, A1=344, STOP=A0+(A1-A0)*0.64;
- const val=A0+(STOP-A0)*Math.max(0,Math.min(1,frac));
  const P=(a,r)=>[cx+r*Math.cos(a*Math.PI/180), cy+r*Math.sin(a*Math.PI/180)];
  const path=(a0,a1,r)=>{const[x0,y0]=P(a0,r),[x1,y1]=P(a1,r);
- return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;};
+  return `M${x0.toFixed(1)} ${y0.toFixed(1)} A${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;};
  const sw=w*0.10, hat=[]; const n=7, step=(A1-STOP)/n;
  for(let a=STOP+step*0.15; a<A1-0.4; a+=step) hat.push(path(a, Math.min(a+step*0.5,A1), R));
+ const val=A0+(STOP-A0)*Math.max(0,Math.min(1,frac||0));
  const [tx1,ty1]=P(STOP,R-sw*0.7), [tx2,ty2]=P(STOP,R+sw*0.7);
- return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true" fill="none">
- ${hat.map(d=>`<path d="${d}" stroke="var(--mute)" stroke-width="${(sw*0.68).toFixed(1)}"/>`).join('')}
- <path d="${path(A0,STOP,R)}" stroke="var(--track)" stroke-width="${sw.toFixed(1)}"/>
- ${frac>0?`<path d="${path(A0,val,R)}" stroke="${col||'var(--sta-ink)'}" stroke-width="${sw.toFixed(1)}"/>`:''}
- <line x1="${tx1.toFixed(1)}" y1="${ty1.toFixed(1)}" x2="${tx2.toFixed(1)}" y2="${ty2.toFixed(1)}"
- stroke="var(--ink)" stroke-width="${(sw*0.44).toFixed(1)}" stroke-linecap="round"/>
- <circle cx="${cx}" cy="${cy}" r="${(w*0.037).toFixed(1)}" fill="var(--ink)"/></svg>`;
+ return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true" fill="none" style="color:${col||'var(--ink)'}">
+  ${hat.map(d=>`<path d="${d}" stroke="currentColor" stroke-width="${(sw*0.68).toFixed(1)}" opacity=".45"/>`).join('')}
+  <path d="${path(A0,STOP,R)}" stroke="currentColor" stroke-width="${sw.toFixed(1)}" opacity=".38"/>
+  ${frac>0?`<path d="${path(A0,val,R)}" stroke="currentColor" stroke-width="${sw.toFixed(1)}" stroke-linecap="round"/>`:''}
+  <line x1="${tx1.toFixed(1)}" y1="${ty1.toFixed(1)}" x2="${tx2.toFixed(1)}" y2="${ty2.toFixed(1)}"
+   stroke="currentColor" stroke-width="${(sw*0.44).toFixed(1)}" stroke-linecap="round"/>
+ </svg>`;
 }
 function band(kicker, title, right, hero){
  return `<div class="band">
@@ -5242,7 +5274,7 @@ function scToday(){
  const pl=planStatus();
  const done=pl?pl.done:0, per=pl?pl.perWeek:0;
  const frac=per?done/per:0;
- const hero=`<div class="band-hero">${gauge(88,frac,todayMode()==='restorative'?'var(--res-ink)':'var(--sta-ink)')}
+ const hero=`<div class="band-hero">${gauge(88,frac)}
  <div class="rd"><div class="big">${done} of ${per||', '}</div>
  <div class="cap">sessions this week${pl&&pl.target?` · ${pl.weeksLeft} week${pl.weeksLeft===1?'':'s'} to your date`:''}.
  ${todayMode()!=='full'?`Today is set to ${MODES[todayMode()].label.toLowerCase()}.`:''}</div></div></div>`;
@@ -5375,8 +5407,8 @@ function scToday(){
 function scPlan(){
  const wk=weekPlan();
  return `${band('Progression','This week',wk.length+' tracked')}
- <div class="dk info"><span class="flag">How the gate works</span>
- <p>Load goes up only after two consecutive sessions with control 4 or better and joint symptom 2 or lower. Reps and hold time increase before weight. Depth never increases.</p>
+ <div class="dk info"><span class="flag">When the app increases something</span>
+ <p>Nothing increases until two sessions in a row where you rated your control 4 or better and joint pain 2 or lower. One good session is not enough. Reps and hold time increase first, then supports come off, then tempo slows, and weight is last. Depth never increases.</p>
  <p style="margin-top:9px">Stabilizers before strength. That order is what makes load protective rather than risky, because a joint has to be held before it is worth loading.</p>
  <button class="b b-pa b-w b-s" style="margin-top:11px" data-why="1">Why this order</button></div>
  ${wk.length?wk.map(x=>{const e=exById(x.id),b=x.s.b;
@@ -5412,7 +5444,7 @@ function scLibrary(){
  const gs=gatesFor(e), lk=exLocked(e), left=gs.filter(g=>!g.met).length;
  const note = b&&b.full ? 'Restricted, '+b.r.label.toLowerCase()
  : b ? SIDE_LABEL[b.side]+' only, '+b.r.label.toLowerCase()
- : lk ? left+' gate'+(left===1?'':'s')+' to clear first'
+ : lk ? left+' requirement'+(left===1?'':'s')+' still to meet'
  : (logged?fmtTarget(bl)+' · '+fmtLoad(bl):e.dose+' · '+estMin(e.id)+' min');
  return `<button class="row ${(b&&b.full)||lk?'off':''}" data-ex="${e.id}">
  <div class="thumb">${ph?`<img src="${ph}" alt="">`:fig(e.figEnd)}</div>
@@ -5427,7 +5459,7 @@ function scSession(){
  const a=S.active;
  const frac=a.ex.length?a.done.length/a.ex.length:0;
  return `${band('Session',a.name,a.done.length+' of '+a.ex.length,
- `<div class="band-hero">${gauge(80,frac,'var(--sta-ink)')}<div class="rd">
+ `<div class="band-hero">${gauge(80,frac)}<div class="rd">
  <div class="big">${a.done.length} of ${a.ex.length}</div>
  <div class="cap">logged. Stopping early is recorded the same way as finishing.</div></div></div>`)}
  <div class="pan"><div class="pan-b">
@@ -5545,13 +5577,13 @@ function scYou(){
  <div class="mod" style="margin-top:6px">
  <button class="tg" data-loadoverride="1" aria-pressed="${!!p.loadOverride}"><span></span></button>
  <div style="flex:1"><strong style="font-size:14.5px">I am already cleared to load</strong>
- <div class="sub">Skips the foundation gate. Worth checking with your PT first, the gate exists because loading a joint the stabilizers cannot hold is the thing this app is built to avoid.</div></div></div>
+ <div class="sub">Skips the readiness requirement. Worth checking with your PT first. The requirement exists because loading a joint the muscles around it cannot yet control is what this app is built to avoid.</div></div></div>
  </div></div>
  <div class="pan"><div class="pan-hd"><h3>Tempo and time under tension</h3></div><div class="pan-b">
  <p class="sub" style="margin-bottom:11px">Every exercise carries a tempo, and the app times the work interval from it. Tempo is how you reach a real muscular stimulus at a lower absolute load. Which matters more to you than it does to most lifters.</p>
  <button class="b b-pa b-w b-s" data-tempo="1">Read why</button></div></div>
  <div class="pan"><div class="pan-hd"><h3>Rating scales</h3></div><div class="pan-b">
- <p class="sub" style="margin-bottom:11px">Muscle burn is expected. Joint pain is the signal. They are logged separately and only the joint score gates progression.</p>
+ <p class="sub" style="margin-bottom:11px">You rate muscle effort and joint pain separately. Burn in the muscle during a set is expected and does not change anything. Joint pain is what the app acts on, and it decides whether your numbers go up, stay where they are, or come down.</p>
  <button class="b b-pa b-w b-s" data-rub="1">Read the full scales</button></div></div>
  <div class="pan"><div class="pan-hd"><h3>Version and updates</h3><span class="lbl">${esc(BUILD)}</span></div>
  <div class="pan-b tight">
@@ -5644,12 +5676,12 @@ function scSport(){
  return `${band(SPORTS_DEF[s].label,'Sport work',shown.length+(shown.length===1?' sport':' sports'))}
  ${switcher}
  ${sports.includes('triathlon')?`<div class="dk info"><span class="flag">Triathlon</span>
- <p>Selecting triathlon brings running, cycling and swimming with it, switch between them above. Each has its own chain, and they share most of the same gates, so clearing one moves the others along too.</p></div>`:''}
+ <p>Selecting triathlon brings running, cycling and swimming with it, switch between them above. Each has its own chain, and they share most of the same requirements, so meeting one advances the others too.</p></div>`:''}
  ${noChain.length?`<div class="dk"><span class="flag">Not built yet</span>
  <h3>${noChain.map(x=>SPORTS_DEF[x].label).join(', ')} ${noChain.length===1?'has':'have'} no prerequisite chain</h3>
- <p>Those sports still tag relevant exercises in the library and influence what gets picked for a session, but the gated sport-specific work below only exists for ${esc(SPORTS_DEF[s].label)} so far.</p></div>`:''}
+ <p>Those sports still tag relevant exercises in the library and influence what gets picked for a session, but the sport-specific work below only exists for ${esc(SPORTS_DEF[s].label)} so far.</p></div>`:''}
  <div class="dk info"><span class="flag">How this works</span>
- <p>Sport work sits at the end of a chain, not the start. Each gate is measured from your own logs, three sessions at the target with control 4 or better and joint symptom 2 or lower. Nothing here is scheduled until its gates clear.</p></div>
+ <p>Sport work comes last, in two senses. It is added at the end of a session, once you are warm, and it only becomes available after the general work it is built on. Each requirement is measured from your own logs: three sessions at the target with control 4 or better and joint pain 2 or lower.</p></div>
  ${(()=>{const fa=focusFor(s); if(!fa.length) return '';
  const sel=focusSelected();
  const here=fa.filter(x=>sel.includes(x.id)).length;
@@ -5657,7 +5689,7 @@ function scSport(){
  return `<div class="pan"><div class="pan-hd"><h3>What are you working on?</h3>
  <span class="lbl">${here} of ${fa.length} in ${esc(SPORTS_DEF[s].label.toLowerCase())}</span></div>
  <div class="pan-b tight">
- <p class="sub" style="margin-bottom:11px">Pick the parts of ${esc(SPORTS_DEF[s].label.toLowerCase())} you want to improve. Selected areas get picked sooner when a session is built, and each one opens up what actually produces it.</p>
+ <p class="sub" style="margin-bottom:11px">Pick the parts of ${esc(SPORTS_DEF[s].label.toLowerCase())} you want to improve. Choosing an area tells the app to reach for its exercises sooner, and shows you the work that builds toward it.</p>
  ${elsewhere?`<p class="sub" style="margin-bottom:11px">You also have ${elsewhere} selected under ${esc(shown.filter(x=>x!==s&&(focusFor(x)||[]).some(a=>sel.includes(a.id))).map(x=>SPORTS_DEF[x].label).join(', '))}. Everything you pick, across every sport, feeds the same sessions.</p>`:''}
  ${fa.map(x=>`<div class="slotrow">
  <button class="tg" data-focus="${x.id}" aria-pressed="${sel.includes(x.id)}"><span></span></button>
@@ -5669,7 +5701,7 @@ function scSport(){
  ${chains.map(ch=>{
  const gp=ch.gates.map(gateProgress);
  const cleared=gp.filter(g=>g.met).length;
- return `<div class="pan"><div class="pan-hd"><h3>${esc(ch.name)}</h3><span class="lbl">${cleared}/${gp.length} gates</span></div>
+ return `<div class="pan"><div class="pan-hd"><h3>${esc(ch.name)}</h3><span class="lbl">${cleared} of ${gp.length} met</span></div>
  <div class="pan-b tight">
  ${gp.map((g,i)=>`<div class="slotrow">
  <div class="slotn ${g.met?'done':''}">${g.met?'✓':i+1}</div>
@@ -5689,7 +5721,7 @@ function scSport(){
  <div class="sub">${lk?'Needs: '+need.map(g=>g.label.toLowerCase()).join(', '):e.dose+' · ready'}</div></div>
  <span class="chev">${lk?'🔒':'›'}</span></button>`;}).join('')}
  </div></div>`;}).join('')}
- <p class="foot">These gates are the app's own rule, not a clinical clearance. Ask your PT before you start anything with impact. Especially while a trunk restriction is active.</p>`;
+ <p class="foot">These requirements are the app's own rule, not a clinical clearance. Ask your PT before you start anything with impact. Especially while a trunk restriction is active.</p>`;
 }
 
 /* ============================================================
@@ -5708,9 +5740,9 @@ function sheetEx(id){
  openSheet(e.name, `
  ${b&&b.full?`<div class="note"><b>Restricted</b>${esc(b.r.label)}, ${esc(b.r.note)} It stays out of your sessions until that is cleared in Settings.</div>`:''}
  ${b&&!b.full?`<div class="note"><b>${esc(SIDE_LABEL[b.side])} only</b>Your ${esc(b.r.label.toLowerCase())} restriction applies to the other side. Work this one on the ${b.side} only.</div>`:''}
- ${gs.length?`<div class="pan"><div class="pan-hd"><h3>${lk?'Locked':'Unlocked'}</h3><span class="lbl">${gs.filter(g=>g.met).length}/${gs.length} gates</span></div>
+ ${gs.length?`<div class="pan"><div class="pan-hd"><h3>${lk?'Not available yet':'Available'}</h3><span class="lbl">${gs.filter(g=>g.met).length} of ${gs.length} met</span></div>
  <div class="pan-b tight">
- ${lk?`<p class="sub" style="margin-bottom:10px">This is sport work. It becomes schedulable once the gates below clear, each one measured from your own logs.</p>`:`<p class="sub" style="margin-bottom:10px">Every prerequisite is met. Build up slowly anyway.</p>`}
+ ${lk?`<p class="sub" style="margin-bottom:10px">This is sport work. It becomes available once the requirements below are met, each measured from your own logs.</p>`:`<p class="sub" style="margin-bottom:10px">Every prerequisite is met. Build up slowly anyway.</p>`}
  ${gs.map(g=>`<div class="slotrow"><div class="slotn ${g.met?'done':''}">${g.met?'✓':'·'}</div>
  <div class="row-b"><h4 style="font-size:14px;font-weight:600">${esc(g.label)}</h4>
  ${g.parts&&g.parts.length?`<div class="pills">${g.parts.map(p=>`<span class="pill ${p.have>=p.need?'m':''}">${esc(p.name)} ${p.have}/${p.need}</span>`).join('')}</div>`
@@ -5822,7 +5854,7 @@ function renderLog(last,b){
  <select data-d="joint" style="font-size:15px">${e.joints.map(j=>`<option ${draft.joint===j?'selected':''}>${j}</option>`).join('')}</select></div>
  ${SYMPTOM.map(c=>opt('symptom',c,draft.symptom)).join('')}
  <div class="rule" style="background:var(--line)"></div>
- <div class="lbl" style="margin-bottom:7px">Muscle soreness, expected, gates nothing</div>
+ <div class="lbl" style="margin-bottom:7px">Muscle soreness, expected, changes nothing</div>
  ${SORENESS.map(c=>opt('soreness',c,draft.soreness)).join('')}
  <button class="b b-go b-w" style="margin-top:10px" data-save="1">Save this set</button>`);
 }
@@ -5834,7 +5866,7 @@ function sheetRubric(){
  openSheet('Rating scales', `<p class="sub" style="color:var(--mute);margin-bottom:14px">Both scales are written out so the numbers mean the same thing every time. That is the only way the log is worth keeping.</p>
  ${sec('Control',CONTROL,'Progression needs 4 or better. A 2 drops the load. A 1 sends the exercise back one step.')}
  ${sec('Joint symptom',SYMPTOM,'Progression needs 2 or lower. 5 or above holds the load. 7 or above ends that region for the day.')}
- ${sec('Muscle soreness',SORENESS,'Logged so it is not confused with joint pain. It gates nothing.')}`);
+ ${sec('Muscle soreness',SORENESS,'Logged so it is not confused with joint pain. It does not change what the app does.')}`);
 }
 
 /* ---------- timer ---------- */
@@ -6187,7 +6219,7 @@ function loadWhySheet(){
  <div class="sub">${p.have>=p.need?'done':(p.need-p.have)+' more session'+((p.need-p.have)===1?'':'s')+' at the target, control 4 or better, joint symptom 2 or lower'}</div></div>
  </div>`).join(''):`<p class="sub">${x.override?'Opened manually.':'Cleared.'}</p>`}
  </div></div>`).join('')}
- <div class="note"><b>If you already train</b>You can open loaded days now in Settings. The gate is a default, not a rule. It is there because the app cannot see you, and your PT can.</div>`);
+ <div class="note"><b>If you already train</b>You can open loaded days now in Settings. This is a default rather than a rule. It is set conservatively because the app cannot see you and your PT can.</div>`);
 }
 
 /* ============================================================
@@ -6339,7 +6371,7 @@ document.addEventListener('click',ev=>{
  if(d.seeday){ sheetDay(); return; }
  if(d.loadwhy){ loadWhySheet(); return; }
  if(d.loadoverride){
- if(!S.profile.loadOverride && !confirm('This opens loaded strength days straight away, skipping the control gate.\n\nWorth checking with your PT first. Continue?')) return;
+ if(!S.profile.loadOverride && !confirm('This opens loaded strength days straight away, skipping the readiness requirement.\n\nWorth checking with your PT first. Continue?')) return;
  S.profile.loadOverride=!S.profile.loadOverride; S.week=null; save(); render();
  toast(S.profile.loadOverride?'Loaded days opened.':'Back to the foundation weeks.'); return; }
  if(d.rebuild){ buildWeek(); closeSheet(); render(); toast('Week rebuilt.'); return; }
@@ -6407,7 +6439,7 @@ document.addEventListener('click',ev=>{
  toast(draft.symptom>=5?'Logged. Joint at '+draft.symptom+'. Holding the load.':'Logged.'); return; }
  const sg=suggest(draft.exId);
  toast(draft.symptom>=5?'Logged. Joint at '+draft.symptom+'. Holding the load.'
- :(sg&&sg.k==='up')?'Logged. Gate met, see Week.':'Logged.');
+ :(sg&&sg.k==='up')?'Logged. Ready to increase, see Week.':'Logged.');
  render(); return; }
 
  if(d.end){ if(S.active){S.sessions.push(Object.assign({},S.active,{status:d.end}));S.active=null;save();}
